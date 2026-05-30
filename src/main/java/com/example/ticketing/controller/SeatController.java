@@ -1,21 +1,29 @@
 package com.example.ticketing.controller;
 
+import com.example.ticketing.entity.Seat;
 import com.example.ticketing.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/seats")
+@RequestMapping("/seats")
 @RequiredArgsConstructor
 public class SeatController {
-
     private final SeatService seatService;
-
     @PostMapping("/{seatId}/hold")
     public String holdSeat(
             @PathVariable Long seatId,
             @RequestParam Long userId
     ) {
         return seatService.holdSeat(seatId, userId);
+    }
+
+    @GetMapping("/performance/{performanceId}")
+    public List<Seat> getSeatsByPerformance(
+            @PathVariable Long performanceId) {
+
+        return seatService.getSeatsByPerformance(performanceId);
     }
 }

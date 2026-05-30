@@ -26,11 +26,12 @@
         padding: 0 70px;
     }
 
-    .logo {
-        font-size: 26px;
-        font-weight: bold;
-        color: #2563eb;
-    }
+.logo {
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: bold;
+    color: #2563eb;
+}
 
     nav a {
         margin-left: 30px;
@@ -91,7 +92,7 @@
 <body>
 
 <header>
-  <div class="logo">QuickTicket</div>
+  <a href="mainpage.html" class="logo">QuickTicket</a>
   <nav>
     <a href="main.html">홈</a>
     <a href="login.html">로그인</a>
@@ -103,48 +104,80 @@
 <div class="container">
   <h1>예매 내역</h1>
 
-  <div class="ticket">
-    <div class="ticket-info">
-      <h2>JH CONCERT</h2>
-      예매번호 : QT20260410001<br>
-      공연일자 : 2026.04.10<br>
-      공연장소 : KSPO DOME<br>
-      좌석 : A1, A2<br>
-      결제금액 : 240,000원<br>
-      상태 : <span class="status">예매 완료</span>
-    </div>
-
-    <button class="cancel-btn" onclick="cancelTicket()">
-      예매 취소
-    </button>
-  </div>
-
-  <div class="ticket">
-    <div class="ticket-info">
-      <h2>뮤지컬 B</h2>
-      예매번호 : QT20260415002<br>
-      공연일자 : 2026.04.15<br>
-      공연장소 : 블루스퀘어<br>
-      좌석 : B4<br>
-      결제금액 : 90,000원<br>
-      상태 : <span class="status">결제 완료</span>
-    </div>
-
-    <button class="cancel-btn" onclick="cancelTicket()">
-      예매 취소
-    </button>
-  </div>
 </div>
 
 <script>
-  function cancelTicket() {
+  const userId = localStorage.getItem("userId");
+  const container = document.querySelector(".container");
+
+  if (!userId) {
+      alert("로그인 후 이용할 수 있습니다.");
+      location.href = "login.html";
+  }
+
+  async function loadBookings() {
+      const response = await fetch(`/bookings/user/${userId}`);
+      const bookings = await response.json();
+
+      container.innerHTML = "<h1>예매 내역</h1>";
+
+      if (bookings.length === 0) {
+          container.innerHTML += "<p>예매 내역이 없습니다.</p>";
+          return;
+      }
+
+      bookings.forEach(booking => {
+          const performance = booking.performance;
+          const seats = booking.seats || [];
+
+          const seatNames = seats.map(s => s.seatNumber).join(", ");
+          const totalPrice = seats.reduce((sum, s) => sum + s.price, 0);
+
+          const date = performance.performanceDate
+              ? new Date(performance.performanceDate).toLocaleString("ko-KR")
+              : "-";
+
+          const ticket = document.createElement("div");
+          ticket.className = "ticket";
+
+          ticket.innerHTML = `
+              <div class="ticket-info">
+                <h2>${performance.title}</h2>
+                예매번호 : ${booking.bookingId}<br>
+                공연일자 : ${date}<br>
+                공연장소 : ${performance.place}<br>
+                좌석 : ${seatNames}<br>
+                결제금액 : ${totalPrice.toLocaleString()}원<br>
+                상태 : <span class="status">${booking.status}</span>
+              </div>
+
+              <button class="cancel-btn" onclick="cancelTicket(${booking.bookingId})">
+                예매 취소
+              </button>
+          `;
+
+          container.appendChild(ticket);
+      });
+  }
+
+  async function cancelTicket(bookingId) {
       const result = confirm("예매를 취소하시겠습니까?");
 
-      if (result) {
+      if (!result) return;
+
+      const response = await fetch(`/bookings/${bookingId}`, {
+          method: "DELETE"
+      });
+
+      if (response.ok) {
           alert("예매가 취소되었습니다.");
+          loadBookings();
+      } else {
+          alert("예매 취소 실패");
       }
   }
-</script>
 
+  loadBookings();
+</script>
 </body>
 </html>

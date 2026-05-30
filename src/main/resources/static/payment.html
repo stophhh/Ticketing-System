@@ -25,12 +25,12 @@
         justify-content: space-between;
         padding: 0 70px;
     }
-
-    .logo {
-        font-size: 26px;
-        font-weight: bold;
-        color: #2563eb;
-    }
+.logo {
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: bold;
+    color: #2563eb;
+}
 
     nav a {
         margin-left: 30px;
@@ -108,7 +108,7 @@
 <body>
 
 <header>
-  <div class="logo">QuickTicket</div>
+  <a href="mainpage.html" class="logo">QuickTicket</a>
   <nav>
     <a href="mypage.html">마이페이지</a>
     <a href="login.html">로그인</a>
@@ -158,40 +158,107 @@
 </div>
 
 <script>
+  const params = new URLSearchParams(location.search);
+
+  const performanceId = params.get("performanceId");
+  const seatIdsParam = params.get("seatIds");
+  const amount = Number(params.get("amount") || 0);
+
+  const userId = localStorage.getItem("userId") || 1;
+
+  window.onload = function () {
+      const amountEl = document.getElementById("amount");
+      const seatsEl = document.getElementById("selectedSeats");
+
+      if (amountEl) {
+          amountEl.innerText = amount.toLocaleString() + "원";
+      }
+
+      if (seatsEl) {
+          seatsEl.innerText = seatIdsParam || "없음";
+      }
+  };
+
   async function pay() {
-    const selected = document.querySelector('input[name="payment"]:checked');
+      const selected = document.querySelector('input[name="payment"]:checked');
 
-    if (!selected) {
-        document.getElementById("message").innerText = "결제 수단을 선택해주세요.";
-        document.getElementById("message").style.color = "red";
-        return;
-    }
+      if (!selected) {
+          document.getElementById("message").innerText = "결제 수단을 선택해주세요.";
+          document.getElementById("message").style.color = "red";
+          return;
+      }
 
-    const params = new URLSearchParams(location.search);
-    const seatId = params.get("seatId") || 1;
+      if (!performanceId || !seatIdsParam) {
+          document.getElementById("message").innerText = "예매 정보가 없습니다.";
+          document.getElementById("message").style.color = "red";
+          return;
+      }
 
-    const request = await fetch("/api/payments/request?bookingId=1&amount=50000&method=" + selected.value, {
-        method: "POST"
-    });
+      const seatIds = seatIdsParam.split(",").map(id => Number(id));
 
-    const payment = await request.json();
+      try {
+          // 1. 예매 생성
+          const bookingResponse = await fetch("/bookings", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  userId: Number(userId),
+                  performanceId: Number(performanceId),
+                  seatIds: seatIds
+              })
+          });
 
-    await fetch(`/api/payments/${payment.id}/confirm`, {
-        method: "POST"
-    });
+          if (!bookingResponse.ok) {
+              const error = await bookingResponse.text();
+              throw new Error(error);
+          }
 
-    const complete = await fetch(`/api/bookings/complete?paymentId=${payment.id}&seatId=${seatId}`, {
-        method: "POST"
-    });
+          const booking = await bookingResponse.json();
 
-    const result = await complete.text();
+          // 2. 결제 요청
+          const paymentResponse = await fetch("/payments", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  bookingId: booking.bookingId,
+                  amount: amount,
+                  method: selected.value
+              })
+          });
 
-    document.getElementById("message").innerText = result;
+          if (!paymentResponse.ok) {
+              const error = await paymentResponse.text();
+              throw new Error(error);
+          }
 
-    if (result.includes("예매 완료")) {
-        location.href = "mypage.html";
-    }
-}
+          const payment = await paymentResponse.json();
+
+          // 3. 결제 확정
+          const confirmResponse = await fetch(`/payments/${payment.id}/confirm`, {
+              method: "POST"
+          });
+
+          const result = await confirmResponse.text();
+
+          document.getElementById("message").innerText = result;
+          document.getElementById("message").style.color = "green";
+
+          if (result.includes("결제 완료")) {
+              location.href =
+                  `complete.html?bookingId=${booking.bookingId}&paymentId=${payment.id}`;
+          }
+
+      } catch (error) {
+          console.error(error);
+          document.getElementById("message").innerText =
+              "결제 처리 중 오류가 발생했습니다.";
+          document.getElementById("message").style.color = "red";
+      }
+  }
 </script>
 
 </body>

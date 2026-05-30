@@ -28,10 +28,11 @@
         }
 
         .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #2563eb;
-        }
+        text-decoration: none;
+        font-size: 26px;
+        font-weight: bold;
+        color: #2563eb;
+    }
 
         nav a {
             margin-left: 30px;
@@ -189,10 +190,10 @@
 <body>
 
 <header>
-    <div class="logo">QuickTicket</div>
+    <a href="mainpage.html" class="logo">QuickTicket</a>
 
     <nav>
-        <a href="#">마이페이지</a>
+        <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
         <a href="#">고객센터</a>
@@ -243,8 +244,14 @@
 </div>
 
 <script>
-    const rows = 5;
-    const cols = 8;
+    const params = new URLSearchParams(location.search);
+    const performanceId = params.get("performanceId");
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+        alert("로그인 후 좌석을 선택할 수 있습니다.");
+        location.href = "login.html";
+    }
     const maxTickets = 4;
 
     const seatsDiv = document.getElementById("seats");
@@ -255,75 +262,76 @@
 
     let selectedSeats = [];
 
-    for (let i = 0; i < rows; i++) {
+    if (!performanceId) {
+        alert("공연 정보가 없습니다.");
+        location.href = "mainpage.html";
+    }
 
-        const rowDiv = document.createElement("div");
-        rowDiv.classList.add("seat-row");
+    async function loadSeats() {
+        const response = await fetch(`/seats/performance/${performanceId}`);
+        const seats = await response.json();
 
-        const rowName = String.fromCharCode(65 + i);
+        seatsDiv.innerHTML = "";
 
-        for (let j = 1; j <= cols; j++) {
+        seats.forEach(seat => {
+            const btn = document.createElement("button");
 
-            const seat = document.createElement("button");
-            const seatName = rowName + j;
+            btn.classList.add("seat");
+            btn.innerText = seat.seatNumber;
+            btn.dataset.id = seat.id;
+            btn.dataset.name = seat.seatNumber;
+            btn.dataset.price = seat.price;
 
-            seat.classList.add("seat");
-            seat.innerText = seatName;
-
-            if (Math.random() < 0.2) {
-
-                seat.classList.add("booked");
-
+            if (seat.status === "AVAILABLE") {
+                btn.classList.add("available");
+                btn.onclick = () => toggleSeat(btn, seat);
             } else {
-
-                seat.classList.add("available");
-
-                seat.onclick = function () {
-
-                    if (seat.classList.contains("available")) {
-
-                        if (selectedSeats.length >= maxTickets) {
-                            showMessage("최대 4매까지만 예매할 수 있습니다.");
-                            return;
-                        }
-
-                        seat.classList.remove("available");
-                        seat.classList.add("selected");
-                        selectedSeats.push(seatName);
-
-                    } else if (seat.classList.contains("selected")) {
-
-                        seat.classList.remove("selected");
-                        seat.classList.add("available");
-
-                        selectedSeats =
-                            selectedSeats.filter(s => s !== seatName);
-
-                        showMessage("");
-                    }
-
-                    updateSummary();
-                };
+                btn.classList.add("booked");
+                btn.disabled = true;
             }
 
-            rowDiv.appendChild(seat);
+            seatsDiv.appendChild(btn);
+        });
+    }
+
+    function toggleSeat(btn, seat) {
+        const alreadySelected = selectedSeats.some(s => s.id === seat.id);
+
+        if (!alreadySelected) {
+            if (selectedSeats.length >= maxTickets) {
+                showMessage("최대 4매까지만 예매할 수 있습니다.");
+                return;
+            }
+
+            btn.classList.remove("available");
+            btn.classList.add("selected");
+
+            selectedSeats.push({
+                id: seat.id,
+                name: seat.seatNumber,
+                price: seat.price
+            });
+
+        } else {
+            btn.classList.remove("selected");
+            btn.classList.add("available");
+
+            selectedSeats = selectedSeats.filter(s => s.id !== seat.id);
+            showMessage("");
         }
 
-        seatsDiv.appendChild(rowDiv);
+        updateSummary();
     }
 
     function updateSummary() {
-
-        selectedCountEl.innerText =
-            selectedSeats.length + "매";
+        selectedCountEl.innerText = selectedSeats.length + "매";
 
         selectedSeatsEl.innerText =
             selectedSeats.length === 0
                 ? "없음"
-                : selectedSeats.join(", ");
+                : selectedSeats.map(s => s.name).join(", ");
 
-        payBtn.disabled =
-            selectedSeats.length === 0;
+        payBtn.disabled = selectedSeats.length === 0;
     }
 
     function showMessage(msg) {
@@ -331,28 +339,38 @@
     }
 
     async function goToPayment() {
+        if (selectedSeats.length === 0) {
+            showMessage("좌석을 먼저 선택해주세요.");
+            return;
+        }
 
-    if (selectedSeats.length === 0) {
-        showMessage("좌석을 먼저 선택해주세요.");
-        return;
+        try {
+            for (const seat of selectedSeats) {
+                const response = await fetch(`/seats/${seat.id}/hold?userId=${userId}`, {
+                    method: "POST"
+                });
+
+                const result = await response.text();
+
+                if (!result.includes("성공")) {
+                    showMessage(result);
+                    return;
+                }
+            }
+
+            const seatIds = selectedSeats.map(s => s.id).join(",");
+            const totalAmount = selectedSeats.reduce((sum, s) => sum + Number(s.price), 0);
+
+            location.href =
+                `payment.html?performanceId=${performanceId}&seatIds=${seatIds}&amount=${totalAmount}`;
+
+        } catch (e) {
+            console.error(e);
+            showMessage("좌석 선점 중 오류가 발생했습니다.");
+        }
     }
 
-    const seatId = 1; // 테스트용: A1을 DB seat id 1번으로 처리
-
-    const response = await fetch(`/api/seats/${seatId}/hold?userId=1`, {
-        method: "POST"
-    });
-
-    const result = await response.text();
-
-    if (!result.includes("성공")) {
-        showMessage(result);
-        return;
-    }
-
-    alert("결제 페이지로 이동합니다.");
-    location.href = `payment.html?seatId=${seatId}`;
-}
+    loadSeats();
 </script>
 
 </body>

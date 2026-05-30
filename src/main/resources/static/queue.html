@@ -28,11 +28,12 @@
             padding: 0 70px;
         }
 
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #2563eb;
-        }
+    .logo {
+        text-decoration: none;
+        font-size: 26px;
+        font-weight: bold;
+        color: #2563eb;
+}
 
         nav a {
             margin-left: 30px;
@@ -132,10 +133,10 @@
 <body>
 
 <header>
-    <div class="logo">QuickTicket</div>
+    <a href="mainpage.html" class="logo">QuickTicket</a>
 
     <nav>
-        <a href="#">마이페이지</a>
+        <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
         <a href="#">고객센터</a>
@@ -188,8 +189,23 @@
     const enterBtn = document.getElementById("enterBtn");
     const noticeText = document.getElementById("noticeText");
 
+    if (!performanceId) {
+        alert("공연 정보가 없습니다.");
+        location.href = "mainpage.html";
+    }
+
+    async function loadPerformance() {
+        try {
+            const response = await fetch("/performances/" + performanceId);
+            const performance = await response.json();
+            document.getElementById("performanceTitle").innerText = performance.title;
+        } catch (e) {
+            document.getElementById("performanceTitle").innerText = "공연 정보";
+        }
+    }
+
     async function joinQueue() {
-        const response = await fetch("/api/queue/join", {
+        const response = await fetch("/queue/join", {
             method: "POST"
         });
 
@@ -197,12 +213,13 @@
         queueId = data.id;
 
         checkQueue();
-
         setInterval(checkQueue, 2000);
     }
 
     async function checkQueue() {
-        const response = await fetch(`/api/queue/check?queueId=${queueId}`);
+        if (!queueId) return;
+
+        const response = await fetch(`/queue/check?queueId=${queueId}`);
         const people = await response.text();
 
         peopleAhead.textContent = people + "명";
@@ -221,6 +238,7 @@
         location.href = "seat.html?performanceId=" + performanceId;
     }
 
+    loadPerformance();
     joinQueue();
 </script>
 

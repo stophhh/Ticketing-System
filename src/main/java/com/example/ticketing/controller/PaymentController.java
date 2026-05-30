@@ -1,33 +1,37 @@
 package com.example.ticketing.controller;
-
 import com.example.ticketing.entity.Payment;
 import com.example.ticketing.service.PaymentService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentController {
-
     private final PaymentService paymentService;
-
-    @PostMapping("/request")
-    public Payment requestPayment(
-            @RequestParam Long bookingId,
-            @RequestParam int amount,
-            @RequestParam String method
-    ) {
-        return paymentService.requestPayment(bookingId, amount, method);
+    @PostMapping
+    public Payment requestPayment(@RequestBody PaymentRequest request) {
+        return paymentService.requestPayment(
+                request.getBookingId(),
+                request.getAmount(),
+                request.getMethod()
+        );
     }
-
     @PostMapping("/{paymentId}/confirm")
     public String confirmPayment(@PathVariable Long paymentId) {
         return paymentService.confirmPayment(paymentId);
     }
-
     @PostMapping("/{paymentId}/cancel")
     public String cancelPayment(@PathVariable Long paymentId) {
         return paymentService.cancelPayment(paymentId);
+    }
+    @Getter
+
+    @Setter
+    public static class PaymentRequest {
+        private Long bookingId;
+        private int amount;
+        private String method;
     }
 }

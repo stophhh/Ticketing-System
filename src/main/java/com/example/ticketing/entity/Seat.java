@@ -3,6 +3,7 @@ package com.example.ticketing.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,8 +17,15 @@ public class Seat {
 
     private String seatNumber;
 
+    private String grade;   // VIP, R, S
+    private int price;
+
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
 
     private LocalDateTime holdExpiresAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
 }

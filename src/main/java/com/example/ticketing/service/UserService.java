@@ -41,10 +41,10 @@ public class UserService {
 
     public String login(UserDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("회원이 없습니다."));
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 틀렸습니다.");
+            return "비밀번호가 일치하지 않습니다.";
         }
 
         return "로그인 성공";

@@ -2,131 +2,196 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>관리자 페이지</title>
+    <title>QuickTicket 관리자</title>
 
     <style>
         * {
-            box-sizing: border-box;
-            font-family: "Apple SD Gothic Neo", sans-serif;
+          box-sizing: border-box;
+          font-family: "Pretendard", Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            background: #f4f7fb;
-            color: #222;
+          margin: 0;
+          background: #f8fafc;
+          color: #111;
         }
 
         header {
-            height: 70px;
-            background: white;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 70px;
+          height: 70px;
+          background: white;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 80px;
+          border-bottom: 1px solid #eee;
         }
 
         .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #2563eb;
+          text-decoration: none;
+          font-size: 24px;
+          font-weight: 900;
+          color: #2563eb;
         }
 
-        .admin-label {
-            font-weight: bold;
-            color: #555;
+        nav a {
+          margin-left: 25px;
+          text-decoration: none;
+          color: #444;
+          font-weight: 600;
+        }
+
+        nav a:hover {
+          color: #2563eb;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 50px auto;
+          max-width: 1100px;
+          margin: 50px auto;
+          padding: 0 20px;
         }
 
-        h1 {
-            margin-bottom: 30px;
+        .page-title {
+          font-size: 32px;
+          margin-bottom: 10px;
         }
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-bottom: 40px;
+        .page-desc {
+          color: #666;
+          margin-bottom: 30px;
         }
 
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        .admin-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 25px;
         }
 
-        .card-title {
-            color: #777;
-            margin-bottom: 12px;
+        .box {
+          background: white;
+          border-radius: 18px;
+          padding: 30px;
+          border: 1px solid #eee;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.06);
         }
 
-        .card-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2563eb;
+        .box h2 {
+          margin-top: 0;
+          color: #2563eb;
         }
 
-        .section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
+        label {
+          display: block;
+          margin-top: 15px;
+          margin-bottom: 6px;
+          font-weight: bold;
+          color: #333;
         }
 
-        input {
-            width: 100%;
-            padding: 13px;
-            margin-bottom: 12px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
+        input, textarea, select {
+          width: 100%;
+          padding: 13px;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          outline: none;
+          font-size: 15px;
+        }
+
+        textarea {
+          height: 100px;
+          resize: none;
         }
 
         button {
-            padding: 12px 18px;
-            border: none;
-            border-radius: 12px;
-            background: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
+          width: 100%;
+          margin-top: 22px;
+          padding: 14px;
+          border: none;
+          border-radius: 10px;
+          background: #2563eb;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 15px;
         }
 
         button:hover {
-            background: #2563eb;
+          background: #1d4ed8;
         }
 
-        table {
+        .danger {
+          background: #dc2626;
+        }
+
+        .danger:hover {
+          background: #b91c1c;
+        }
+
+        .message {
+          margin-top: 15px;
+          font-weight: bold;
+        }
+
+        .list {
+          margin-top: 35px;
+          background: white;
+          border-radius: 18px;
+          padding: 25px;
+          border: 1px solid #eee;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+
+        .performance-item {
+          border-bottom: 1px solid #eee;
+          padding: 18px 0;
+          display: flex;
+          justify-content: space-between;
+          gap: 20px;
+          align-items: center;
+        }
+
+        .performance-item:last-child {
+          border-bottom: none;
+        }
+
+        .item-title {
+          font-weight: bold;
+          font-size: 18px;
+        }
+
+        .item-info {
+          color: #666;
+          font-size: 14px;
+          margin-top: 5px;
+        }
+
+        .item-actions {
+          display: flex;
+          gap: 10px;
+          min-width: 240px;
+        }
+
+        .item-actions button {
+          margin-top: 0;
+          padding: 10px;
+        }
+
+        @media (max-width: 900px) {
+          .admin-grid {
+            grid-template-columns: 1fr;
+          }
+
+          header {
+            padding: 0 20px;
+          }
+
+          .performance-item {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .item-actions {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border-bottom: 1px solid #e5e7eb;
-            padding: 14px;
-            text-align: center;
-        }
-
-        th {
-            background: #f8fafc;
-        }
-
-        .edit-btn {
-    background: #3b82f6;
-        }
-
-        .delete-btn {
-    background: #ef4444;
-        }
-
-        .delete-btn:hover {
-            background: #dc2626;
+          }
         }
     </style>
 </head>
@@ -134,127 +199,206 @@
 <body>
 
 <header>
-    <div class="logo">QuickTicket Admin</div>
-    <div class="admin-label">관리자 페이지</div>
+    <a href="mainpage.html" class="logo">QuickTicket</a>
+    <nav>
+        <a href="mainpage.html">메인</a>
+        <a href="admin.html">관리자</a>
+    </nav>
 </header>
 
 <div class="container">
+    <h1 class="page-title">관리자 페이지</h1>
+    <p class="page-desc">공연을 등록하고, 공연별 좌석을 자동 생성할 수 있습니다.</p>
 
-    <h1>관리자 대시보드</h1>
+    <div class="admin-grid">
+        <div class="box">
+            <h2>공연 등록</h2>
 
-    <div class="dashboard">
-        <div class="card">
-            <div class="card-title">등록 공연 수</div>
-            <div class="card-value">12</div>
+            <label>공연명</label>
+            <input type="text" id="title" placeholder="예: NCT WISH CONCERT">
+
+            <label>카테고리</label>
+            <select id="category">
+                <option value="콘서트">콘서트</option>
+                <option value="뮤지컬">뮤지컬</option>
+                <option value="팬미팅">팬미팅</option>
+                <option value="연극">연극</option>
+            </select>
+
+            <label>공연 장소</label>
+            <input type="text" id="place" placeholder="예: KSPO DOME">
+
+            <label>공연 날짜/시간</label>
+            <input type="datetime-local" id="performanceDate">
+
+            <label>기본 가격</label>
+            <input type="number" id="price" placeholder="예: 150000">
+
+            <label>포스터 URL</label>
+            <input type="text" id="posterUrl" placeholder="/images/concert1.jpg">
+
+            <label>공연 설명</label>
+            <textarea id="description" placeholder="공연 상세 설명을 입력하세요"></textarea>
+
+            <button onclick="createPerformance()">공연 등록</button>
+            <div class="message" id="createMessage"></div>
         </div>
 
-        <div class="card">
-            <div class="card-title">마감된 공연 </div>
-            <div class="card-value">348</div>
-        </div>
+        <div class="box">
+            <h2>좌석 생성</h2>
 
-        <div class="card">
-            <div class="card-title">문의 사항</div>
-            <div class="card-value">57</div>
+            <label>공연 선택</label>
+            <select id="seatPerformanceSelect"></select>
+
+            <label>VIP 좌석 수</label>
+            <input type="number" id="vipCount" value="20">
+
+            <label>R 좌석 수</label>
+            <input type="number" id="rCount" value="30">
+
+            <label>S 좌석 수</label>
+            <input type="number" id="sCount" value="50">
+
+            <button onclick="createSeats()">좌석 생성</button>
+            <div class="message" id="seatMessage"></div>
         </div>
     </div>
 
-    <div class="section">
-        <h2>공연 등록</h2>
-
-        <input type="text" id="title" placeholder="공연명">
-        <input type="date" id="date">
-        <input type="text" id="place" placeholder="공연장소">
-        <input type="number" id="price" placeholder="가격">
-
-        <button onclick="addPerformance()">
-            공연 등록
-        </button>
+    <div class="list">
+        <h2>등록된 공연 목록</h2>
+        <div id="performanceList"></div>
     </div>
-
-    <div class="section">
-        <h2>공연 목록 관리</h2>
-
-        <table>
-            <thead>
-            <tr>
-                <th>공연명</th>
-                <th>날짜</th>
-                <th>장소</th>
-                <th>가격</th>
-                <th>관리</th>
-            </tr>
-            </thead>
-
-            <tbody id="performanceList">
-            <tr>
-                <td>JH CONCERT</td>
-                <td>2026.04.10</td>
-                <td>KSPO DOME</td>
-                <td>120,000원</td>
-                <td>
-                    <button class="edit-btn" onclick="editRow(this)">
-                        수정
-                    </button>
-                    <button class="delete-btn" onclick="deleteRow(this)">
-                        삭제
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
 </div>
 
 <script>
-    function addPerformance() {
-        const title = document.getElementById("title").value;
-        const date = document.getElementById("date").value;
-        const place = document.getElementById("place").value;
-        const price = document.getElementById("price").value;
+    let performances = [];
 
-        if (!title || !date || !place || !price) {
-            alert("공연 정보를 모두 입력해주세요.");
-            return;
-        }
+    async function loadPerformances() {
+      const response = await fetch("/performances");
+      performances = await response.json();
 
-        const table = document.getElementById("performanceList");
+      renderPerformanceList();
+      renderPerformanceSelect();
+    }
 
-        const row = document.createElement("tr");
+    function renderPerformanceSelect() {
+      const select = document.getElementById("seatPerformanceSelect");
+      select.innerHTML = "";
 
-        row.innerHTML = `
-            <td>${title}</td>
-            <td>${date}</td>
-            <td>${place}</td>
-            <td>${Number(price).toLocaleString()}원</td>
-            <td>
-                <button class="delete-btn" onclick="deleteRow(this)">
-                                수정
-                            </button>
-                <button class="delete-btn" onclick="deleteRow(this)">
-                    삭제
-                </button>
-            </td>
+      performances.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.performanceId;
+        option.innerText = p.title;
+        select.appendChild(option);
+      });
+    }
+
+    function renderPerformanceList() {
+      const list = document.getElementById("performanceList");
+      list.innerHTML = "";
+
+      if (performances.length === 0) {
+        list.innerHTML = "<p>등록된 공연이 없습니다.</p>";
+        return;
+      }
+
+      performances.forEach(p => {
+        const date = p.performanceDate
+          ? new Date(p.performanceDate).toLocaleString("ko-KR")
+          : "날짜 미정";
+
+        const item = document.createElement("div");
+        item.className = "performance-item";
+
+        item.innerHTML = `
+          <div>
+            <div class="item-title">${p.title}</div>
+            <div class="item-info">
+              ${p.category || '카테고리 없음'} · ${p.place || '장소 미정'} · ${date}
+            </div>
+            <div class="item-info">
+              가격: ${(p.price || 0).toLocaleString()}원
+            </div>
+          </div>
+
+          <div class="item-actions">
+            <button onclick="createSeatsFor(${p.performanceId})">좌석 생성</button>
+            <button class="danger" onclick="deletePerformance(${p.performanceId})">삭제</button>
+          </div>
         `;
 
-        table.appendChild(row);
-
-        alert("공연이 등록되었습니다.");
-
-        document.getElementById("title").value = "";
-        document.getElementById("date").value = "";
-        document.getElementById("place").value = "";
-        document.getElementById("price").value = "";
+        list.appendChild(item);
+      });
     }
 
-    function deleteRow(button) {
-        const result = confirm("공연을 삭제하시겠습니까?");
+    async function createPerformance() {
+      const performance = {
+        title: document.getElementById("title").value,
+        category: document.getElementById("category").value,
+        place: document.getElementById("place").value,
+        performanceDate: document.getElementById("performanceDate").value,
+        price: Number(document.getElementById("price").value),
+        posterUrl: document.getElementById("posterUrl").value,
+        description: document.getElementById("description").value
+      };
 
-        if (result) {
-            button.parentElement.parentElement.remove();
-        }
+      const response = await fetch("/admin/performances", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(performance)
+      });
+
+      if (response.ok) {
+        document.getElementById("createMessage").innerText = "공연 등록 완료";
+        document.getElementById("createMessage").style.color = "green";
+        await loadPerformances();
+      } else {
+        document.getElementById("createMessage").innerText = "공연 등록 실패";
+        document.getElementById("createMessage").style.color = "red";
+      }
     }
+
+    async function createSeats() {
+      const id = document.getElementById("seatPerformanceSelect").value;
+      await createSeatsFor(id);
+    }
+
+    async function createSeatsFor(id) {
+      const vip = document.getElementById("vipCount").value || 20;
+      const r = document.getElementById("rCount").value || 30;
+      const s = document.getElementById("sCount").value || 50;
+
+      const response = await fetch(
+        `/admin/performances/${id}/seats?vipCount=${vip}&rCount=${r}&sCount=${s}`,
+        { method: "POST" }
+      );
+
+      if (response.ok) {
+        document.getElementById("seatMessage").innerText = "좌석 생성 완료";
+        document.getElementById("seatMessage").style.color = "green";
+      } else {
+        document.getElementById("seatMessage").innerText = "좌석 생성 실패";
+        document.getElementById("seatMessage").style.color = "red";
+      }
+    }
+
+    async function deletePerformance(id) {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+
+      const response = await fetch(`/admin/performances/${id}`, {
+        method: "DELETE"
+      });
+
+      if (response.ok) {
+        await loadPerformances();
+      } else {
+        alert("삭제 실패");
+      }
+    }
+
+    loadPerformances();
 </script>
 
 </body>

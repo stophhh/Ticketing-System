@@ -24,4 +24,6 @@ public class Performance {
     private String description;
 
     private String posterUrl;
+
+    private String category;
 }

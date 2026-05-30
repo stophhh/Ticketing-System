@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-  <h1>🎉 예매 완료</h1>
-  <p>QuickTicket 예매가 완료되었습니다.</p>
-  <a href="main.html">메인으로</a>
+    <h1>예매가 완료되었습니다.</h1>
+
+    <p id="booking"></p>
+    <p id="payment"></p>
+
+    <button onclick="location.href='mainpage.html'">
+        메인으로
+    </button>
+
+    <script>
+        const params = new URLSearchParams(location.search);
+
+        document.getElementById("booking").innerText =
+        "예매번호 : " + params.get("bookingId");
+
+        document.getElementById("payment").innerText =
+        "결제번호 : " + params.get("paymentId");
+    </script>
 </head>
 <body>
 

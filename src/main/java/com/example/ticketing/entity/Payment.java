@@ -23,5 +23,7 @@ public class Payment {
 
     private LocalDateTime paidAt;
 
-    private Long bookingId;
+    @OneToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 }

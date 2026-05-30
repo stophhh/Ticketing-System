@@ -30,6 +30,7 @@
         font-size: 26px;
         font-weight: bold;
         color: #2563eb;
+        text-decoration: none;
     }
 
     nav a {
@@ -112,7 +113,7 @@
 <body>
 
 <header>
-  <div class="logo">QuickTicket</div>
+  <a href="mainpage.html" class="logo">QuickTicket</a>
   <nav>
     <a href="mypage.html">마이페이지</a>
     <a href="login.html">로그인</a>
@@ -122,21 +123,22 @@
 </header>
 
 <div class="container">
-  <img src="concert1.jpg" class="poster" alt="공연 포스터">
+  <img id="poster" src="/images/default.jpg" class="poster" alt="공연 포스터">
 
   <div class="info">
-    <h1>JH CONCERT</h1>
+    <h1 id="title">공연 정보를 불러오는 중...</h1>
 
     <div class="detail">
-      공연일자 : 2026.04.10<br>
-      공연시간 : 오후 7시 30분<br>
-      공연장소 : KSPO DOME<br>
+      공연일자 : <span id="performanceDate">-</span><br>
+      공연장소 : <span id="place">-</span><br>
       관람등급 : 만 12세 이상<br>
       러닝타임 : 120분<br>
       예매 가능 매수 : 1인 최대 4매
     </div>
 
-    <div class="price">VIP석(지정석) 165,000원 / 일반석(지정석) 143,000원 / 시야제한석 143,000원</div>
+    <div class="price">
+      기본가 <span id="price">-</span>원
+    </div>
 
     <button class="book-btn" onclick="goQueue()">
       예매하기
@@ -146,23 +148,56 @@
 
 <div class="description">
   <h2>공연 상세 정보</h2>
-  <p>
-    - 공연명: JH CONCERT in SEOUL
-    - 공연일시: 2026년 4월 10일(금) 4:00PM (KST)
-    - 공연장소: KSPO DOME
-    - 티켓가격: VIP석(지정석) 165,000원 / 일반석(지정석) 143,000원 / 시야제한석 143,000원 (부가세 포함)
-    - 매수제한: 회당 1인 4매
-    - 관람연령: 만 12세 이상
-    - 예매처: Quick Ticket
-  </p>
+  <p id="description">공연 상세 정보를 불러오는 중...</p>
 </div>
 
 <script>
   const params = new URLSearchParams(location.search);
   const performanceId = params.get("id");
 
+  if (!performanceId) {
+      alert("공연 ID가 없습니다.");
+      location.href = "mainpage.html";
+  }
+
+  fetch("/performances/" + performanceId)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error("공연 정보를 불러오지 못했습니다.");
+          }
+          return response.json();
+      })
+      .then(performance => {
+          document.getElementById("title").innerText = performance.title || "공연명 없음";
+          document.getElementById("place").innerText = performance.place || "-";
+          document.getElementById("price").innerText = (performance.price || 0).toLocaleString();
+          document.getElementById("description").innerText = performance.description || "상세 설명이 없습니다.";
+
+          if (performance.posterUrl) {
+              document.getElementById("poster").src = performance.posterUrl;
+          }
+
+          if (performance.performanceDate) {
+              const date = new Date(performance.performanceDate);
+              document.getElementById("performanceDate").innerText =
+                  date.toLocaleString("ko-KR");
+          }
+      })
+      .catch(error => {
+          console.error(error);
+          alert("공연 상세 정보를 불러오지 못했습니다.");
+      });
+
   function goQueue() {
-      location.href = "queue.html?performanceId=" + performanceId;
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+        alert("로그인 후 예매할 수 있습니다.");
+        location.href = "login.html";
+        return;
+    }
+
+    location.href = "queue.html?performanceId=" + performanceId;
   }
 </script>
 

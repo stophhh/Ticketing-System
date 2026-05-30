@@ -2,270 +2,344 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>회원가입</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - QuickTicket</title>
 
     <style>
-
-        *{
-            box-sizing: border-box;
-            font-family: "Apple SD Gothic Neo", sans-serif;
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
         }
 
         body {
-            margin: 0;
-            background: #f4f7fb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          background: #f4f7fb;
         }
 
-        .container {
-            width: 400px;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        /* ── Header ── */
+        header {
+          height: 64px;
+          background: #fff;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 48px;
+          flex-shrink: 0;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #222;
+        .logo {
+          text-decoration: none;
+          font-size: 22px;
+          font-weight: 700;
+          color: #2563eb;
         }
 
-        .sub-text{
-            text-align: center;
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 30px;
+        nav { display: flex; gap: 24px; }
+        nav a {
+          text-decoration: none;
+          color: #555;
+          font-size: 14px;
+          font-weight: 600;
+          transition: color 0.2s;
+        }
+        nav a:hover { color: #111; }
+
+        /* ── Main ── */
+        main {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 48px 16px;
         }
 
-        input {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 14px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 14px;
-            transition: 0.3s;
+        /* ── Card ── */
+        .card {
+          background: #fff;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+          padding: 40px 36px;
+          width: 100%;
+          max-width: 420px;
         }
 
-        input:focus{
-            border-color: #3b82f6;
-            outline: none;
-            box-shadow: 0 0 8px rgba(59,130,246,0.2);
+        .card-header {
+          text-align: center;
+          margin-bottom: 28px;
+        }
+        .card-header h1 {
+          font-size: 26px;
+          font-weight: 700;
+          color: #111;
+          margin-bottom: 6px;
+        }
+        .card-header p {
+          font-size: 13px;
+          color: #888;
         }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+        /* ── Form ── */
+        .field {
+          margin-bottom: 14px;
+        }
+        .field label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          color: #555;
+          margin-bottom: 6px;
+        }
+        .field input {
+          width: 100%;
+          height: 44px;
+          padding: 0 14px;
+          border: 1px solid #dcdcdc;
+          border-radius: 12px;
+          font-size: 14px;
+          color: #111;
+          background: #fff;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          outline: none;
+        }
+        .field input:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .signup-btn{
-            background: #3b82f6;
-            color: white;
-            margin-top: 10px;
+        /* 아이디 행: input + 버튼 나란히 */
+        .field-row {
+          display: flex;
+          gap: 8px;
         }
-
-        .signup-btn:hover{
-            background: #2563eb;
+        .field-row input {
+          flex: 1;
         }
-
         .check-btn {
-            background: #e8f1ff;
-            color: #2563eb;
-            margin-bottom: 15px;
+          height: 44px;
+          padding: 0 16px;
+          border: 1px solid #3b82f6;
+          border-radius: 12px;
+          background: #eff6ff;
+          color: #2563eb;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: background 0.2s;
+          flex-shrink: 0;
+        }
+        .check-btn:hover { background: #dbeafe; }
+
+        /* ── Signup Button ── */
+        .signup-btn {
+          width: 100%;
+          height: 44px;
+          margin-top: 6px;
+          border: none;
+          border-radius: 12px;
+          background: #3b82f6;
+          color: #fff;
+          font-size: 15px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.15s;
+        }
+        .signup-btn:hover {
+          background: #2563eb;
+          transform: translateY(-1px);
+        }
+        .signup-btn:active {
+          transform: translateY(0);
         }
 
-        .check-btn:hover{
-            background: #dbeafe;
+        /* ── Divider ── */
+        .divider {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin: 20px 0;
+        }
+        .divider span {
+          font-size: 12px;
+          color: #aaa;
+          white-space: nowrap;
+        }
+        .divider::before,
+        .divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #eee;
         }
 
+        .login-row {
+          text-align: center;
+          font-size: 13px;
+          color: #666;
+        }
+        .login-row a {
+          color: #3b82f6;
+          font-weight: 700;
+          text-decoration: none;
+          margin-left: 4px;
+        }
+        .login-row a:hover { text-decoration: underline; }
+
+        /* ── Message ── */
         #message {
-            margin-top: 20px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
+          display: none;
+          margin-top: 16px;
+          font-size: 13px;
+          font-weight: 600;
+          text-align: center;
+          padding: 10px 12px;
+          border-radius: 12px;
+          background: #f5f7fa;
         }
-
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
+    <a href="mainpage.html" class="logo">QuickTicket</a>
+    <nav>
+        <a href="mypage.html">마이페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+        <a href="#">고객센터</a>
+    </nav>
+</header>
 
-    <h1>회원가입</h1>
-    <div class="sub-text">
-        QuickTicket 계정을 생성하세요
+<main>
+    <div class="card">
+
+        <div class="card-header">
+            <h1>회원가입</h1>
+            <p>QuickTicket 계정을 생성하세요</p>
+        </div>
+
+        <div class="field">
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="이름 입력" />
+        </div>
+
+        <div class="field">
+            <label for="phone">전화번호</label>
+            <input type="tel" id="phone" placeholder="010-0000-0000" />
+        </div>
+
+        <div class="field">
+            <label for="birth">생년월일</label>
+            <input type="date" id="birth" />
+        </div>
+
+        <div class="field">
+            <label for="email">이메일</label>
+            <input type="email" id="email" placeholder="hello@example.com" />
+        </div>
+
+        <div class="field">
+            <label for="username">아이디</label>
+            <div class="field-row">
+                <input type="text" id="username" placeholder="아이디 입력" />
+                <button class="check-btn" onclick="checkUsername()">중복 확인</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" placeholder="비밀번호 입력" />
+        </div>
+
+        <div class="field">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" placeholder="비밀번호 재입력" />
+        </div>
+
+        <button class="signup-btn" onclick="signup()">회원가입</button>
+
+        <div class="divider"><span>또는</span></div>
+
+        <div class="login-row">
+            이미 계정이 있으신가요?
+            <a href="login.html">로그인</a>
+        </div>
+
+        <div id="message"></div>
+
     </div>
-
-    <input type="text" id="name" placeholder="이름">
-
-    <input type="tel" id="phone" placeholder="전화번호">
-
-    <input type="date" id="birth">
-
-    <input type="email" id="email" placeholder="이메일">
-
-    <input type="text" id="username" placeholder="아이디">
-
-    <button class="check-btn"
-            onclick="checkUsername()">
-        아이디 중복 확인
-    </button>
-
-    <input type="password"
-           id="password"
-           placeholder="비밀번호">
-
-    <input type="password"
-           id="confirmPassword"
-           placeholder="비밀번호 재입력">
-
-    <button class="signup-btn"
-            onclick="signup()">
-        회원가입
-    </button>
-
-    <p id="message"></p>
-
-</div>
+</main>
 
 <script>
-
     let isUsernameChecked = false;
 
     async function checkUsername() {
+      const username = document.getElementById("username").value;
+      if (!username) { showMessage("아이디를 입력하세요", "red"); return; }
 
-        const username =
-            document.getElementById("username").value;
-
-        if (!username) {
-
-            showMessage("아이디를 입력하세요", "red");
-            return;
+      try {
+        const res = await fetch(`/users/check?username=${username}`);
+        if (res.ok) {
+          const data = await res.text();
+          if (data === "duplicate") {
+            showMessage("이미 사용 중인 아이디입니다", "red");
+            isUsernameChecked = false;
+          } else {
+            showMessage("사용 가능한 아이디입니다", "green");
+            isUsernameChecked = true;
+          }
         }
-
-        try {
-
-            const res =
-                await fetch(`/api/users/check?username=${username}`);
-
-            if (res.ok) {
-
-                const data = await res.text();
-
-                if (data === "duplicate") {
-
-                    showMessage("이미 사용 중인 아이디입니다", "red");
-                    isUsernameChecked = false;
-
-                } else {
-
-                    showMessage("사용 가능한 아이디입니다", "green");
-                    isUsernameChecked = true;
-                }
-            }
-
-        } catch (e) {
-
-            showMessage("중복 확인 실패", "red");
-        }
+      } catch (e) {
+        showMessage("중복 확인 실패", "red");
+      }
     }
 
     async function signup() {
+      const name            = document.getElementById("name").value;
+      const phone           = document.getElementById("phone").value;
+      const birth           = document.getElementById("birth").value;
+      const email           = document.getElementById("email").value;
+      const username        = document.getElementById("username").value;
+      const password        = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-        const name =
-            document.getElementById("name").value;
+      if (password !== confirmPassword) { showMessage("비밀번호가 일치하지 않습니다", "red"); return; }
+      if (!isUsernameChecked)           { showMessage("아이디 중복 확인을 해주세요", "red"); return; }
 
-        const phone =
-            document.getElementById("phone").value;
+      try {
+        const response = await fetch("/users/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, phone, birth, email, username, password })
+        });
 
-        const birth =
-            document.getElementById("birth").value;
-
-        const email =
-            document.getElementById("email").value;
-
-        const username =
-            document.getElementById("username").value;
-
-        const password =
-            document.getElementById("password").value;
-
-        const confirmPassword =
-            document.getElementById("confirmPassword").value;
-
-        if(password !== confirmPassword){
-
-            showMessage("비밀번호가 일치하지 않습니다", "red");
-            return;
+        if (!response.ok) {
+          const errorText = await response.text();
+          showMessage("회원가입 실패: " + errorText, "red");
+          return;
         }
 
-        if(!isUsernameChecked){
+        showMessage("회원가입 성공! 로그인 페이지로 이동합니다", "green");
+        setTimeout(() => location.href = "login.html", 1500);
 
-            showMessage("아이디 중복 확인을 해주세요", "red");
-            return;
-        }
-
-        try {
-
-            const response =
-                await fetch("/api/users/signup", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    name: name,
-                    phone: phone,
-                    birth: birth,
-                    email: email,
-                    username: username,
-                    password: password
-                })
-            });
-
-            if(!response.ok){
-
-                const errorText = await response.text();
-
-                showMessage(
-                    "회원가입 실패 : " + errorText,
-                    "red"
-                );
-
-                return;
-            }
-
-            showMessage("회원가입 성공!", "green");
-
-        } catch (e) {
-
-            showMessage("서버 오류 발생", "red");
-        }
+      } catch (e) {
+        showMessage("서버 오류 발생", "red");
+      }
     }
 
-    function showMessage(msg, color){
-
-        const el = document.getElementById("message");
-
-        el.innerText = msg;
-        el.style.color = color;
+    function showMessage(msg, color) {
+      const el = document.getElementById("message");
+      el.style.display = "block";
+      el.innerText = msg;
+      el.style.color = color === "red" ? "#dc2626" : "#16a34a";
+      el.style.background = color === "red" ? "#fef2f2" : "#f0fdf4";
     }
-
 </script>
 
 </body>
