@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대기열 페이지</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Apple SD Gothic Neo", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #222;
+            text-align: center;
+        }
+
+        header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .hero {
+            background: white;
+            padding: 55px 20px 40px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #777;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 430px;
+            margin: 55px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 28px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 34px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .notice {
+            margin-top: 24px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .ready {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 21px;
+            margin-top: 25px;
+        }
+
+        .enter-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            display: none;
+            transition: 0.3s;
+        }
+
+        .enter-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">QuickTicket</div>
+
+    <nav>
+        <a href="#">마이페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+        <a href="#">고객센터</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1 id="performanceTitle">JH CONCERT</h1>
+    <p>접속자가 많아 순서대로 예매 페이지에 입장하고 있습니다</p>
+</section>
+
+<div class="container">
+
+    <div class="title">대기열 안내</div>
+
+    <div class="info-box">
+        <div class="label">내 앞 대기 인원</div>
+        <div class="value" id="peopleAhead">57명</div>
+    </div>
+
+    <div class="info-box">
+        <div class="label">예상 남은 시간</div>
+        <div class="value" id="remainingTime">02:50</div>
+    </div>
+
+    <div class="notice" id="noticeText">
+        현재 접속자가 많아 순서대로 입장 중입니다.<br>
+        대기열이 진행되는 동안 페이지를 새로고침하지 마세요.
+    </div>
+
+    <div class="ready" id="readyText"></div>
+
+    <button class="enter-btn"
+            id="enterBtn"
+            onclick="enterBooking()">
+        예매 페이지 입장
+    </button>
+
+</div>
+
+<script>
+    const params = new URLSearchParams(location.search);
+    const performanceId = params.get("performanceId");
+
+    let queueId = null;
+
+    const peopleAhead = document.getElementById("peopleAhead");
+    const remainingTime = document.getElementById("remainingTime");
+    const readyText = document.getElementById("readyText");
+    const enterBtn = document.getElementById("enterBtn");
+    const noticeText = document.getElementById("noticeText");
+
+    async function joinQueue() {
+        const response = await fetch("/api/queue/join", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+        queueId = data.id;
+
+        checkQueue();
+
+        setInterval(checkQueue, 2000);
+    }
+
+    async function checkQueue() {
+        const response = await fetch(`/api/queue/check?queueId=${queueId}`);
+        const people = await response.text();
+
+        peopleAhead.textContent = people + "명";
+        remainingTime.textContent = "계산 중";
+
+        if (parseInt(people) <= 0) {
+            peopleAhead.textContent = "0명";
+            remainingTime.textContent = "00:00";
+            readyText.textContent = "입장 가능합니다.";
+            noticeText.textContent = "이제 좌석 선택 페이지로 이동할 수 있습니다.";
+            enterBtn.style.display = "block";
+        }
+    }
+
+    function enterBooking() {
+        location.href = "seat.html?performanceId=" + performanceId;
+    }
+
+    joinQueue();
+</script>
+
+</body>
+</html>

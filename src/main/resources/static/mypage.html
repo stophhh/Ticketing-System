@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>예매 내역</title>
+
+  <style>
+    * {
+        box-sizing: border-box;
+        font-family: "Apple SD Gothic Neo", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f7fb;
+        color: #222;
+    }
+
+    header {
+        height: 70px;
+        background: white;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 70px;
+    }
+
+    .logo {
+        font-size: 26px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    nav a {
+        margin-left: 30px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 50px auto;
+    }
+
+    h1 {
+        margin-bottom: 30px;
+    }
+
+    .ticket {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ticket-info {
+        line-height: 1.9;
+    }
+
+    .ticket-info h2 {
+        margin-bottom: 10px;
+    }
+
+    .status {
+        color: #2563eb;
+        font-weight: bold;
+    }
+
+    .cancel-btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 12px;
+        background: #ef4444;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .cancel-btn:hover {
+        background: #dc2626;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">QuickTicket</div>
+  <nav>
+    <a href="main.html">홈</a>
+    <a href="login.html">로그인</a>
+    <a href="signup.html">회원가입</a>
+    <a href="#">고객센터</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h1>예매 내역</h1>
+
+  <div class="ticket">
+    <div class="ticket-info">
+      <h2>JH CONCERT</h2>
+      예매번호 : QT20260410001<br>
+      공연일자 : 2026.04.10<br>
+      공연장소 : KSPO DOME<br>
+      좌석 : A1, A2<br>
+      결제금액 : 240,000원<br>
+      상태 : <span class="status">예매 완료</span>
+    </div>
+
+    <button class="cancel-btn" onclick="cancelTicket()">
+      예매 취소
+    </button>
+  </div>
+
+  <div class="ticket">
+    <div class="ticket-info">
+      <h2>뮤지컬 B</h2>
+      예매번호 : QT20260415002<br>
+      공연일자 : 2026.04.15<br>
+      공연장소 : 블루스퀘어<br>
+      좌석 : B4<br>
+      결제금액 : 90,000원<br>
+      상태 : <span class="status">결제 완료</span>
+    </div>
+
+    <button class="cancel-btn" onclick="cancelTicket()">
+      예매 취소
+    </button>
+  </div>
+</div>
+
+<script>
+  function cancelTicket() {
+      const result = confirm("예매를 취소하시겠습니까?");
+
+      if (result) {
+          alert("예매가 취소되었습니다.");
+      }
+  }
+</script>
+
+</body>
+</html>

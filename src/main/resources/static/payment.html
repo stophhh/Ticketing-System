@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제하기</title>
+
+  <style>
+    * {
+        box-sizing: border-box;
+        font-family: "Apple SD Gothic Neo", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f7fb;
+        color: #222;
+    }
+
+    header {
+        height: 70px;
+        background: white;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 70px;
+    }
+
+    .logo {
+        font-size: 26px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    nav a {
+        margin-left: 30px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .container {
+        width: 520px;
+        margin: 55px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        line-height: 1.8;
+    }
+
+    label {
+        display: block;
+        margin: 15px 0;
+        font-weight: bold;
+    }
+
+    input[type="radio"] {
+        margin-right: 8px;
+    }
+
+    .total {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .pay-btn {
+        width: 100%;
+        padding: 15px;
+        margin-top: 30px;
+        border: none;
+        border-radius: 12px;
+        background: #3b82f6;
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .pay-btn:hover {
+        background: #2563eb;
+    }
+
+    #message {
+        text-align: center;
+        margin-top: 18px;
+        font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">QuickTicket</div>
+  <nav>
+    <a href="mypage.html">마이페이지</a>
+    <a href="login.html">로그인</a>
+    <a href="signup.html">회원가입</a>
+    <a href="#">고객센터</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h1>결제하기</h1>
+
+  <div class="box">
+    <b>공연명</b> : JH CONCERT<br>
+    <b>공연일자</b> : 2026.04.10<br>
+    <b>선택 좌석</b> : A1, A2<br>
+    <b>매수</b> : 2매
+  </div>
+
+  <div class="box">
+    <h3>결제 수단 선택</h3>
+
+    <label>
+      <input type="radio" name="payment" value="card">
+      신용카드
+    </label>
+
+    <label>
+      <input type="radio" name="payment" value="bank">
+      무통장 입금
+    </label>
+
+    <label>
+      <input type="radio" name="payment" value="kakao">
+      간편결제
+    </label>
+  </div>
+
+  <div class="total">
+    총 결제 금액 : 240,000원
+  </div>
+
+  <button class="pay-btn" onclick="pay()">
+    결제 완료
+  </button>
+
+  <p id="message"></p>
+</div>
+
+<script>
+  async function pay() {
+    const selected = document.querySelector('input[name="payment"]:checked');
+
+    if (!selected) {
+        document.getElementById("message").innerText = "결제 수단을 선택해주세요.";
+        document.getElementById("message").style.color = "red";
+        return;
+    }
+
+    const params = new URLSearchParams(location.search);
+    const seatId = params.get("seatId") || 1;
+
+    const request = await fetch("/api/payments/request?bookingId=1&amount=50000&method=" + selected.value, {
+        method: "POST"
+    });
+
+    const payment = await request.json();
+
+    await fetch(`/api/payments/${payment.id}/confirm`, {
+        method: "POST"
+    });
+
+    const complete = await fetch(`/api/bookings/complete?paymentId=${payment.id}&seatId=${seatId}`, {
+        method: "POST"
+    });
+
+    const result = await complete.text();
+
+    document.getElementById("message").innerText = result;
+
+    if (result.includes("예매 완료")) {
+        location.href = "mypage.html";
+    }
+}
+</script>
+
+</body>
+</html>

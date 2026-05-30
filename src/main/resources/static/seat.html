@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>좌석 선택</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Apple SD Gothic Neo", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #222;
+            text-align: center;
+        }
+
+        header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .hero {
+            background: white;
+            padding: 45px 20px 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #777;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 650px;
+            margin: 45px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .screen {
+            width: 80%;
+            margin: 0 auto 30px;
+            padding: 14px;
+            background: #e8f1ff;
+            color: #2563eb;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .seat-row {
+            margin-bottom: 10px;
+        }
+
+        .seat {
+            width: 46px;
+            height: 46px;
+            margin: 5px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .available {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .available:hover {
+            background: #bfdbfe;
+            transform: translateY(-2px);
+        }
+
+        .selected {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .booked {
+            background: #d1d5db;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .legend-box {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .blue-light {
+            background: #dbeafe;
+        }
+
+        .blue {
+            background: #3b82f6;
+        }
+
+        .gray {
+            background: #d1d5db;
+        }
+
+        .summary {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        #message {
+            margin-top: 18px;
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .pay-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pay-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .pay-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">QuickTicket</div>
+
+    <nav>
+        <a href="#">마이페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+        <a href="#">고객센터</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>좌석 선택</h1>
+    <p>원하는 좌석을 선택한 뒤 결제 단계로 이동하세요</p>
+</section>
+
+<div class="container">
+
+    <div class="screen">STAGE</div>
+
+    <div id="seats"></div>
+
+    <div class="legend">
+        <div>
+            <span class="legend-box blue-light"></span>
+            선택 가능
+        </div>
+        <div>
+            <span class="legend-box blue"></span>
+            선택됨
+        </div>
+        <div>
+            <span class="legend-box gray"></span>
+            예매 불가
+        </div>
+    </div>
+
+    <div class="summary">
+        최대 예매 가능 매수 : <b>4매</b><br>
+        선택한 좌석 수 : <b id="selectedCount">0매</b><br>
+        선택한 좌석 : <b id="selectedSeats">없음</b>
+    </div>
+
+    <div id="message"></div>
+
+    <button class="pay-btn"
+            id="payBtn"
+            onclick="goToPayment()"
+            disabled>
+        결제하기
+    </button>
+
+</div>
+
+<script>
+    const rows = 5;
+    const cols = 8;
+    const maxTickets = 4;
+
+    const seatsDiv = document.getElementById("seats");
+    const selectedCountEl = document.getElementById("selectedCount");
+    const selectedSeatsEl = document.getElementById("selectedSeats");
+    const messageEl = document.getElementById("message");
+    const payBtn = document.getElementById("payBtn");
+
+    let selectedSeats = [];
+
+    for (let i = 0; i < rows; i++) {
+
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("seat-row");
+
+        const rowName = String.fromCharCode(65 + i);
+
+        for (let j = 1; j <= cols; j++) {
+
+            const seat = document.createElement("button");
+            const seatName = rowName + j;
+
+            seat.classList.add("seat");
+            seat.innerText = seatName;
+
+            if (Math.random() < 0.2) {
+
+                seat.classList.add("booked");
+
+            } else {
+
+                seat.classList.add("available");
+
+                seat.onclick = function () {
+
+                    if (seat.classList.contains("available")) {
+
+                        if (selectedSeats.length >= maxTickets) {
+                            showMessage("최대 4매까지만 예매할 수 있습니다.");
+                            return;
+                        }
+
+                        seat.classList.remove("available");
+                        seat.classList.add("selected");
+                        selectedSeats.push(seatName);
+
+                    } else if (seat.classList.contains("selected")) {
+
+                        seat.classList.remove("selected");
+                        seat.classList.add("available");
+
+                        selectedSeats =
+                            selectedSeats.filter(s => s !== seatName);
+
+                        showMessage("");
+                    }
+
+                    updateSummary();
+                };
+            }
+
+            rowDiv.appendChild(seat);
+        }
+
+        seatsDiv.appendChild(rowDiv);
+    }
+
+    function updateSummary() {
+
+        selectedCountEl.innerText =
+            selectedSeats.length + "매";
+
+        selectedSeatsEl.innerText =
+            selectedSeats.length === 0
+                ? "없음"
+                : selectedSeats.join(", ");
+
+        payBtn.disabled =
+            selectedSeats.length === 0;
+    }
+
+    function showMessage(msg) {
+        messageEl.innerText = msg;
+    }
+
+    async function goToPayment() {
+
+    if (selectedSeats.length === 0) {
+        showMessage("좌석을 먼저 선택해주세요.");
+        return;
+    }
+
+    const seatId = 1; // 테스트용: A1을 DB seat id 1번으로 처리
+
+    const response = await fetch(`/api/seats/${seatId}/hold?userId=1`, {
+        method: "POST"
+    });
+
+    const result = await response.text();
+
+    if (!result.includes("성공")) {
+        showMessage(result);
+        return;
+    }
+
+    alert("결제 페이지로 이동합니다.");
+    location.href = `payment.html?seatId=${seatId}`;
+}
+</script>
+
+</body>
+</html>

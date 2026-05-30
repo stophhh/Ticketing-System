@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Apple SD Gothic Neo", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f7fb;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 360px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #222;
+            font-size: 32px;
+        }
+
+        .sub-text {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 8px rgba(59,130,246,0.25);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .signup-area {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .signup-btn {
+            margin-left: 5px;
+            border: none;
+            background: none;
+            color: #3b82f6;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .signup-btn:hover {
+            text-decoration: underline;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 13px;
+            background: #f5f7fa;
+            padding: 12px;
+            border-radius: 12px;
+            max-height: 150px;
+            overflow: auto;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>QuickTicket</h1>
+    <div class="sub-text">빠르고 간편한 공연 예매 서비스</div>
+
+    <input type="text" id="username" placeholder="아이디 입력">
+    <input type="password" id="password" placeholder="비밀번호 입력">
+
+    <button class="login-btn" onclick="login()">로그인</button>
+
+    <div class="signup-area">
+        아직 회원이 아니신가요?
+        <button class="signup-btn"
+                onclick="location.href='signup.html'">
+            회원가입
+        </button>
+    </div>
+
+    <pre id="result"></pre>
+
+</div>
+
+<script>
+    async function login() {
+
+        const username =
+            document.getElementById("username").value;
+
+        const password =
+            document.getElementById("password").value;
+
+        try {
+
+            const response = await fetch("/api/users/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            });
+
+            const result = await response.text();
+
+            if (result.trim() === "로그인 성공") {
+
+                document.getElementById("result").innerText =
+                    "✅ 로그인 성공";
+
+                const redirectUrl =
+                    localStorage.getItem("redirectUrl");
+
+                if (redirectUrl) {
+
+                    localStorage.removeItem("redirectUrl");
+
+                    location.href = redirectUrl;
+
+                } else {
+
+                    location.href = "mainpage.html";
+                }
+
+            } else {
+
+                document.getElementById("result").innerText =
+                    "❌ 로그인 실패: " + result;
+            }
+
+        }
+
+        catch (e) {
+
+            document.getElementById("result").innerText =
+                "⚠️ 서버 연결 오류";
+        }
+    }
+</script>
+
+</body>
+</html>

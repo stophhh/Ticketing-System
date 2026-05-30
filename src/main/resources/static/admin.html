@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Apple SD Gothic Neo", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .admin-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            color: #777;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+            text-align: center;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+
+        .edit-btn {
+    background: #3b82f6;
+        }
+
+        .delete-btn {
+    background: #ef4444;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">QuickTicket Admin</div>
+    <div class="admin-label">관리자 페이지</div>
+</header>
+
+<div class="container">
+
+    <h1>관리자 대시보드</h1>
+
+    <div class="dashboard">
+        <div class="card">
+            <div class="card-title">등록 공연 수</div>
+            <div class="card-value">12</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">마감된 공연 </div>
+            <div class="card-value">348</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">문의 사항</div>
+            <div class="card-value">57</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>공연 등록</h2>
+
+        <input type="text" id="title" placeholder="공연명">
+        <input type="date" id="date">
+        <input type="text" id="place" placeholder="공연장소">
+        <input type="number" id="price" placeholder="가격">
+
+        <button onclick="addPerformance()">
+            공연 등록
+        </button>
+    </div>
+
+    <div class="section">
+        <h2>공연 목록 관리</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>공연명</th>
+                <th>날짜</th>
+                <th>장소</th>
+                <th>가격</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+
+            <tbody id="performanceList">
+            <tr>
+                <td>JH CONCERT</td>
+                <td>2026.04.10</td>
+                <td>KSPO DOME</td>
+                <td>120,000원</td>
+                <td>
+                    <button class="edit-btn" onclick="editRow(this)">
+                        수정
+                    </button>
+                    <button class="delete-btn" onclick="deleteRow(this)">
+                        삭제
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    function addPerformance() {
+        const title = document.getElementById("title").value;
+        const date = document.getElementById("date").value;
+        const place = document.getElementById("place").value;
+        const price = document.getElementById("price").value;
+
+        if (!title || !date || !place || !price) {
+            alert("공연 정보를 모두 입력해주세요.");
+            return;
+        }
+
+        const table = document.getElementById("performanceList");
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${title}</td>
+            <td>${date}</td>
+            <td>${place}</td>
+            <td>${Number(price).toLocaleString()}원</td>
+            <td>
+                <button class="delete-btn" onclick="deleteRow(this)">
+                                수정
+                            </button>
+                <button class="delete-btn" onclick="deleteRow(this)">
+                    삭제
+                </button>
+            </td>
+        `;
+
+        table.appendChild(row);
+
+        alert("공연이 등록되었습니다.");
+
+        document.getElementById("title").value = "";
+        document.getElementById("date").value = "";
+        document.getElementById("place").value = "";
+        document.getElementById("price").value = "";
+    }
+
+    function deleteRow(button) {
+        const result = confirm("공연을 삭제하시겠습니까?");
+
+        if (result) {
+            button.parentElement.parentElement.remove();
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공연 상세</title>
+
+  <style>
+    * {
+        box-sizing: border-box;
+        font-family: "Apple SD Gothic Neo", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f7fb;
+        color: #222;
+    }
+
+    header {
+        height: 70px;
+        background: white;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 70px;
+    }
+
+    .logo {
+        font-size: 26px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    nav a {
+        margin-left: 30px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        display: flex;
+        gap: 40px;
+    }
+
+    .poster {
+        width: 320px;
+        height: 430px;
+        object-fit: cover;
+        border-radius: 16px;
+        background: #e5e7eb;
+    }
+
+    .info {
+        flex: 1;
+    }
+
+    .info h1 {
+        font-size: 34px;
+        margin-bottom: 20px;
+    }
+
+    .detail {
+        font-size: 16px;
+        line-height: 2;
+        color: #555;
+    }
+
+    .price {
+        margin-top: 25px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .book-btn {
+        width: 100%;
+        margin-top: 35px;
+        padding: 16px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .book-btn:hover {
+        background: #2563eb;
+    }
+
+    .description {
+        max-width: 1100px;
+        margin: 30px auto 60px;
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        line-height: 1.8;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">QuickTicket</div>
+  <nav>
+    <a href="mypage.html">마이페이지</a>
+    <a href="login.html">로그인</a>
+    <a href="signup.html">회원가입</a>
+    <a href="#">고객센터</a>
+  </nav>
+</header>
+
+<div class="container">
+  <img src="concert1.jpg" class="poster" alt="공연 포스터">
+
+  <div class="info">
+    <h1>JH CONCERT</h1>
+
+    <div class="detail">
+      공연일자 : 2026.04.10<br>
+      공연시간 : 오후 7시 30분<br>
+      공연장소 : KSPO DOME<br>
+      관람등급 : 만 12세 이상<br>
+      러닝타임 : 120분<br>
+      예매 가능 매수 : 1인 최대 4매
+    </div>
+
+    <div class="price">VIP석(지정석) 165,000원 / 일반석(지정석) 143,000원 / 시야제한석 143,000원</div>
+
+    <button class="book-btn" onclick="goQueue()">
+      예매하기
+    </button>
+  </div>
+</div>
+
+<div class="description">
+  <h2>공연 상세 정보</h2>
+  <p>
+    - 공연명: JH CONCERT in SEOUL
+    - 공연일시: 2026년 4월 10일(금) 4:00PM (KST)
+    - 공연장소: KSPO DOME
+    - 티켓가격: VIP석(지정석) 165,000원 / 일반석(지정석) 143,000원 / 시야제한석 143,000원 (부가세 포함)
+    - 매수제한: 회당 1인 4매
+    - 관람연령: 만 12세 이상
+    - 예매처: Quick Ticket
+  </p>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const performanceId = params.get("id");
+
+  function goQueue() {
+      location.href = "queue.html?performanceId=" + performanceId;
+  }
+</script>
+
+</body>
+</html>

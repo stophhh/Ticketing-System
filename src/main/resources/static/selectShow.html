@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>공연 선택</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Apple SD Gothic Neo", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: white;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #777;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 30px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .card-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+        }
+
+        .poster {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+
+        .card-content {
+            padding: 22px;
+            text-align: left;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .info {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .price {
+            color: #222;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 13px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .book-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">QuickTicket</div>
+
+    <nav>
+        <a href="#">마이페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+        <a href="#">고객센터</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>공연 선택</h1>
+    <p>원하는 공연을 선택하고 빠르게 예매를 진행하세요</p>
+</section>
+
+<div class="container">
+
+    <div class="section-title">예매 가능한 공연</div>
+
+    <div class="card-wrap">
+
+        <div class="card">
+            <img src="concert1.jpg" alt="콘서트 A" class="poster">
+
+            <div class="card-content">
+                <div class="title">콘서트 A</div>
+                <div class="info">2026.04.10</div>
+                <div class="info">KSPO DOME</div>
+                <div class="price">120,000원</div>
+
+                <button class="book-btn"
+                        onclick="goToSeat('콘서트 A')">
+                    예매하기
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="concert2.jpg" alt="뮤지컬 B" class="poster">
+
+            <div class="card-content">
+                <div class="title">뮤지컬 B</div>
+                <div class="info">2026.04.15</div>
+                <div class="info">블루스퀘어</div>
+                <div class="price">90,000원</div>
+
+                <button class="book-btn"
+                        onclick="goToSeat('뮤지컬 B')">
+                    예매하기
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="concert3.jpg" alt="팬미팅 C" class="poster">
+
+            <div class="card-content">
+                <div class="title">팬미팅 C</div>
+                <div class="info">2026.04.20</div>
+                <div class="info">잠실실내체육관</div>
+                <div class="price">110,000원</div>
+
+                <button class="book-btn"
+                        onclick="goToSeat('팬미팅 C')">
+                    예매하기
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function goToSeat(performanceName) {
+        alert(performanceName + " 좌석 선택 페이지로 이동합니다")
+        if (!isLogin) {
+
+    localStorage.setItem(
+        "redirectUrl",
+        location.href
+    );
+
+    location.href = "login.html";
+}
+     location.href = "seat.html?performance=" + encodeURIComponent(performanceName);
+    }
+</script>
+
+</body>
+</html>
