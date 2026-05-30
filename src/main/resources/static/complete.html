@@ -1,26 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <h1>예매가 완료되었습니다.</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 완료 - QuickTicket</title>
 
-    <p id="booking"></p>
-    <p id="payment"></p>
+    <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+        }
 
-    <button onclick="location.href='mainpage.html'">
-        메인으로
-    </button>
+        body {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          background: #f4f7fb;
+        }
 
-    <script>
-        const params = new URLSearchParams(location.search);
+        header {
+          height: 64px;
+          background: #fff;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 48px;
+          flex-shrink: 0;
+        }
 
-        document.getElementById("booking").innerText =
-        "예매번호 : " + params.get("bookingId");
+        .logo {
+          text-decoration: none;
+          font-size: 22px;
+          font-weight: 700;
+          color: #2563eb;
+        }
 
-        document.getElementById("payment").innerText =
-        "결제번호 : " + params.get("paymentId");
-    </script>
+        nav { display: flex; gap: 24px; }
+        nav a {
+          text-decoration: none;
+          color: #555;
+          font-size: 14px;
+          font-weight: 600;
+          transition: color 0.2s;
+        }
+        nav a:hover { color: #111; }
+
+        main {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 48px 16px;
+        }
+
+        .card {
+          background: #fff;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+          padding: 48px 36px 40px;
+          width: 100%;
+          max-width: 440px;
+          text-align: center;
+        }
+
+        /* 체크 아이콘 */
+        .check-circle {
+          width: 72px;
+          height: 72px;
+          border-radius: 50%;
+          background: #eff6ff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px;
+        }
+        .check-circle svg {
+          width: 36px;
+          height: 36px;
+          stroke: #2563eb;
+          stroke-width: 2.5;
+          fill: none;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .card h1 {
+          font-size: 24px;
+          font-weight: 700;
+          color: #111;
+          margin-bottom: 6px;
+        }
+        .card .sub {
+          font-size: 13px;
+          color: #888;
+          margin-bottom: 28px;
+        }
+
+        .info-box {
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-radius: 14px;
+          padding: 20px 22px;
+          margin-bottom: 24px;
+          text-align: left;
+        }
+        .info-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          line-height: 2;
+        }
+        .info-row .label { color: #888; }
+        .info-row .value { font-weight: 600; color: #111; }
+        .info-row .value.blue { color: #2563eb; }
+
+        .divider {
+          height: 1px;
+          background: #e5e7eb;
+          margin: 12px 0;
+        }
+
+        .btn-group {
+          display: flex;
+          gap: 10px;
+        }
+        .btn {
+          flex: 1;
+          height: 44px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.15s;
+          border: none;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-outline {
+          background: #fff;
+          border: 1px solid #dcdcdc;
+          color: #555;
+        }
+        .btn-outline:hover { background: #f4f7fb; }
+        .btn-primary {
+          background: #3b82f6;
+          color: #fff;
+        }
+        .btn-primary:hover { background: #2563eb; }
+    </style>
 </head>
+
 <body>
+
+<header>
+    <a href="mainpage.html" class="logo">QuickTicket</a>
+    <nav>
+        <a href="mypage.html">마이페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+        <a href="#">고객센터</a>
+    </nav>
+</header>
+
+<main>
+    <div class="card">
+
+        <div class="check-circle">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+
+        <h1>결제가 완료되었습니다</h1>
+        <p class="sub">예매 내역은 마이페이지에서 확인하실 수 있습니다</p>
+
+        <div class="info-box">
+            <div class="info-row"><span class="label">공연명</span><span class="value" id="perfName">-</span></div>
+            <div class="info-row"><span class="label">공연일자</span><span class="value" id="perfDate">-</span></div>
+            <div class="info-row"><span class="label">선택 좌석</span><span class="value" id="seats">-</span></div>
+            <div class="info-row"><span class="label">예매 번호</span><span class="value" id="bookingId">-</span></div>
+            <div class="divider"></div>
+            <div class="info-row"><span class="label">결제 금액</span><span class="value blue" id="amount">-</span></div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-outline" onclick="location.href='mainpage.html'">메인으로</button>
+            <button class="btn btn-primary" onclick="location.href='mypage.html'">예매 내역 확인</button>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const params = new URLSearchParams(location.search);
+
+    document.getElementById("perfName").innerText  = params.get("perfName")  || "-";
+    document.getElementById("perfDate").innerText  = params.get("perfDate")  || "-";
+    document.getElementById("seats").innerText     = params.get("seats")     || "-";
+    document.getElementById("bookingId").innerText = params.get("bookingId") || "-";
+
+    const amount = Number(params.get("amount") || 0);
+    document.getElementById("amount").innerText = amount.toLocaleString() + "원";
+</script>
 
 </body>
 </html>

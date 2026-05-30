@@ -2,105 +2,179 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>결제하기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제하기 - QuickTicket</title>
 
   <style>
     * {
-        box-sizing: border-box;
-        font-family: "Apple SD Gothic Neo", sans-serif;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
 
     body {
-        margin: 0;
-        background: #f4f7fb;
-        color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f4f7fb;
+      color: #222;
     }
 
+    /* ── Header ── */
     header {
-        height: 70px;
-        background: white;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 70px;
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      flex-shrink: 0;
     }
-.logo {
-    text-decoration: none;
-    font-size: 26px;
-    font-weight: bold;
-    color: #2563eb;
-}
 
+    .logo {
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+
+    nav { display: flex; gap: 24px; }
     nav a {
-        margin-left: 30px;
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
+      text-decoration: none;
+      color: #555;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #111; }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 16px;
     }
 
-    .container {
-        width: 520px;
-        margin: 55px auto;
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 480px;
     }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
+    .card-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .card-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #111;
     }
 
-    .box {
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 20px;
-        line-height: 1.8;
+    /* ── Info Box ── */
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      line-height: 2;
+      font-size: 14px;
+    }
+    .info-box h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    .info-row .label { color: #888; }
+    .info-row .value { font-weight: 600; color: #111; }
+
+    /* ── Payment Methods ── */
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+    .payment-option:hover { background: #f0f6ff; border-color: #93c5fd; }
+    .payment-option input[type="radio"] { accent-color: #3b82f6; width: 16px; height: 16px; }
+    .payment-option.selected { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+
+    /* ── Total ── */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    .total-row .total-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #555;
+    }
+    .total-row .total-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2563eb;
     }
 
-    label {
-        display: block;
-        margin: 15px 0;
-        font-weight: bold;
-    }
-
-    input[type="radio"] {
-        margin-right: 8px;
-    }
-
-    .total {
-        font-size: 24px;
-        font-weight: bold;
-        color: #2563eb;
-        text-align: right;
-        margin-top: 20px;
-    }
-
+    /* ── Pay Button ── */
     .pay-btn {
-        width: 100%;
-        padding: 15px;
-        margin-top: 30px;
-        border: none;
-        border-radius: 12px;
-        background: #3b82f6;
-        color: white;
-        font-size: 17px;
-        font-weight: bold;
-        cursor: pointer;
+      width: 100%;
+      height: 48px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 12px;
+      background: #3b82f6;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
     }
+    .pay-btn:hover { background: #2563eb; transform: translateY(-1px); }
+    .pay-btn:active { transform: translateY(0); }
+    .pay-btn:disabled { background: #93c5fd; cursor: not-allowed; transform: none; }
 
-    .pay-btn:hover {
-        background: #2563eb;
-    }
-
+    /* ── Message ── */
     #message {
-        text-align: center;
-        margin-top: 18px;
-        font-weight: bold;
+      display: none;
+      margin-top: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fef2f2;
+      color: #dc2626;
     }
   </style>
 </head>
@@ -117,147 +191,139 @@
   </nav>
 </header>
 
-<div class="container">
-  <h1>결제하기</h1>
+<main>
+  <div class="card">
 
-  <div class="box">
-    <b>공연명</b> : JH CONCERT<br>
-    <b>공연일자</b> : 2026.04.10<br>
-    <b>선택 좌석</b> : A1, A2<br>
-    <b>매수</b> : 2매
+    <div class="card-header">
+      <h1>결제하기</h1>
+    </div>
+
+    <!-- 예매 정보 -->
+    <div class="info-box">
+      <h3>예매 정보</h3>
+      <div class="info-row"><span class="label">공연명</span><span class="value" id="perfName">-</span></div>
+      <div class="info-row"><span class="label">공연일자</span><span class="value" id="perfDate">-</span></div>
+      <div class="info-row"><span class="label">선택 좌석</span><span class="value" id="selectedSeats">-</span></div>
+      <div class="info-row"><span class="label">매수</span><span class="value" id="ticketCount">-</span></div>
+    </div>
+
+    <!-- 결제 수단 -->
+    <div class="info-box">
+      <h3>결제 수단 선택</h3>
+      <div class="payment-methods">
+        <label class="payment-option" onclick="selectOption(this)">
+          <input type="radio" name="payment" value="card"> 신용카드
+        </label>
+        <label class="payment-option" onclick="selectOption(this)">
+          <input type="radio" name="payment" value="bank"> 무통장 입금
+        </label>
+        <label class="payment-option" onclick="selectOption(this)">
+          <input type="radio" name="payment" value="kakao"> 카카오페이
+        </label>
+      </div>
+    </div>
+
+    <!-- 총 금액 -->
+    <div class="total-row">
+      <span class="total-label">총 결제 금액</span>
+      <span class="total-amount" id="amount">0원</span>
+    </div>
+
+    <button class="pay-btn" onclick="pay()">결제 완료</button>
+
+    <div id="message"></div>
+
   </div>
-
-  <div class="box">
-    <h3>결제 수단 선택</h3>
-
-    <label>
-      <input type="radio" name="payment" value="card">
-      신용카드
-    </label>
-
-    <label>
-      <input type="radio" name="payment" value="bank">
-      무통장 입금
-    </label>
-
-    <label>
-      <input type="radio" name="payment" value="kakao">
-      간편결제
-    </label>
-  </div>
-
-  <div class="total">
-    총 결제 금액 : 240,000원
-  </div>
-
-  <button class="pay-btn" onclick="pay()">
-    결제 완료
-  </button>
-
-  <p id="message"></p>
-</div>
+</main>
 
 <script>
-  const params = new URLSearchParams(location.search);
-
+  const params        = new URLSearchParams(location.search);
   const performanceId = params.get("performanceId");
-  const seatIdsParam = params.get("seatIds");
-  const amount = Number(params.get("amount") || 0);
-
-  const userId = localStorage.getItem("userId") || 1;
+  const seatIdsParam  = params.get("seatIds");
+  const amount        = Number(params.get("amount") || 0);
+  const userId        = localStorage.getItem("userId") || 1;
 
   window.onload = function () {
-      const amountEl = document.getElementById("amount");
-      const seatsEl = document.getElementById("selectedSeats");
+    document.getElementById("amount").innerText = amount.toLocaleString() + "원";
+    document.getElementById("selectedSeats").innerText = seatIdsParam || "없음";
 
-      if (amountEl) {
-          amountEl.innerText = amount.toLocaleString() + "원";
-      }
+    const seats = seatIdsParam ? seatIdsParam.split(",") : [];
+    document.getElementById("ticketCount").innerText = seats.length + "매";
 
-      if (seatsEl) {
-          seatsEl.innerText = seatIdsParam || "없음";
-      }
+    // URL 파라미터에 공연 정보가 있으면 표시
+    document.getElementById("perfName").innerText = params.get("perfName") || "JH CONCERT";
+    document.getElementById("perfDate").innerText = params.get("perfDate") || "2026.04.10";
   };
 
+  function selectOption(el) {
+    document.querySelectorAll(".payment-option").forEach(o => o.classList.remove("selected"));
+    el.classList.add("selected");
+  }
+
+  function showMessage(msg, type) {
+    const el = document.getElementById("message");
+    el.style.display = "block";
+    el.innerText = msg;
+    if (type === "error") {
+      el.style.background = "#fef2f2";
+      el.style.color = "#dc2626";
+    } else {
+      el.style.background = "#f0fdf4";
+      el.style.color = "#16a34a";
+    }
+  }
+
   async function pay() {
-      const selected = document.querySelector('input[name="payment"]:checked');
+    const selected = document.querySelector('input[name="payment"]:checked');
+    if (!selected)                       { showMessage("결제 수단을 선택해주세요.", "error"); return; }
+    if (!performanceId || !seatIdsParam) { showMessage("예매 정보가 없습니다.", "error"); return; }
 
-      if (!selected) {
-          document.getElementById("message").innerText = "결제 수단을 선택해주세요.";
-          document.getElementById("message").style.color = "red";
-          return;
-      }
+    const btn = document.querySelector(".pay-btn");
+    btn.disabled = true;
+    btn.innerText = "처리 중...";
 
-      if (!performanceId || !seatIdsParam) {
-          document.getElementById("message").innerText = "예매 정보가 없습니다.";
-          document.getElementById("message").style.color = "red";
-          return;
-      }
+    const seatIds = seatIdsParam.split(",").map(id => Number(id));
 
-      const seatIds = seatIdsParam.split(",").map(id => Number(id));
+    try {
+      // 1. 예매 생성
+      const bookingResponse = await fetch("/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: Number(userId),
+          performanceId: Number(performanceId),
+          seatIds
+        })
+      });
+      if (!bookingResponse.ok) throw new Error(await bookingResponse.text());
+      const booking = await bookingResponse.json();
 
-      try {
-          // 1. 예매 생성
-          const bookingResponse = await fetch("/bookings", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                  userId: Number(userId),
-                  performanceId: Number(performanceId),
-                  seatIds: seatIds
-              })
-          });
+      // 2. 결제 요청
+      const paymentResponse = await fetch("/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId: booking.bookingId,
+          amount,
+          method: selected.value
+        })
+      });
+      if (!paymentResponse.ok) throw new Error(await paymentResponse.text());
+      const payment = await paymentResponse.json();
 
-          if (!bookingResponse.ok) {
-              const error = await bookingResponse.text();
-              throw new Error(error);
-          }
+      // 3. 결제 확정
+      const confirmResponse = await fetch(`/payments/${payment.id}/confirm`, { method: "POST" });
+      if (!confirmResponse.ok) throw new Error(await confirmResponse.text());
 
-          const booking = await bookingResponse.json();
+      // 완료 페이지로 이동
+      location.href = `complete.html?bookingId=${booking.bookingId}&paymentId=${payment.id}&amount=${amount}&seats=${seatIdsParam}&perfName=${encodeURIComponent(params.get("perfName") || "JH CONCERT")}&perfDate=${encodeURIComponent(params.get("perfDate") || "2026.04.10")}`;
 
-          // 2. 결제 요청
-          const paymentResponse = await fetch("/payments", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                  bookingId: booking.bookingId,
-                  amount: amount,
-                  method: selected.value
-              })
-          });
-
-          if (!paymentResponse.ok) {
-              const error = await paymentResponse.text();
-              throw new Error(error);
-          }
-
-          const payment = await paymentResponse.json();
-
-          // 3. 결제 확정
-          const confirmResponse = await fetch(`/payments/${payment.id}/confirm`, {
-              method: "POST"
-          });
-
-          const result = await confirmResponse.text();
-
-          document.getElementById("message").innerText = result;
-          document.getElementById("message").style.color = "green";
-
-          if (result.includes("결제 완료")) {
-              location.href =
-                  `complete.html?bookingId=${booking.bookingId}&paymentId=${payment.id}`;
-          }
-
-      } catch (error) {
-          console.error(error);
-          document.getElementById("message").innerText =
-              "결제 처리 중 오류가 발생했습니다.";
-          document.getElementById("message").style.color = "red";
-      }
+    } catch (error) {
+      console.error(error);
+      showMessage("결제 처리 중 오류가 발생했습니다: " + error.message, "error");
+      btn.disabled = false;
+      btn.innerText = "결제 완료";
+    }
   }
 </script>
 
