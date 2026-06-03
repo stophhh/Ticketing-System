@@ -19,7 +19,7 @@ public class SeatService {
         return seatRepository.findByPerformance_PerformanceId(performanceId);
     }
     @Transactional
-    public String holdSeat(Long seatId, Long userId) {
+    public String holdSeat(Long seatId) {
         Seat seat = seatRepository.findByIdForUpdate(seatId)
                 .orElseThrow(() -> new RuntimeException("좌석 없음"));
         if (seat.getStatus() == SeatStatus.RESERVED) {

@@ -17,7 +17,7 @@ public class SeatController {
             @PathVariable Long seatId,
             @RequestParam Long userId
     ) {
-        return seatService.holdSeat(seatId, userId);
+        return seatService.holdSeat(seatId);
     }
 
     @GetMapping("/performance/{performanceId}")
