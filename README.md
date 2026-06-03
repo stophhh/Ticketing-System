@@ -1,7 +1,5 @@
 # Ticketing-System
 
-# Ticketing System
-
 ## Project Overview
 Online ticket reservation system developed with Spring Boot and MySQL.
 
