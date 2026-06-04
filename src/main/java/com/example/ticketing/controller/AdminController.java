@@ -1,10 +1,14 @@
 package com.example.ticketing.controller;
 
+
 import com.example.ticketing.entity.Performance;
+import com.example.ticketing.repository.BookingRepository;
 import com.example.ticketing.service.PerformanceService;
 import com.example.ticketing.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/admin")
@@ -13,6 +17,7 @@ public class AdminController {
 
     private final PerformanceService performanceService;
     private final SeatService seatService;
+    private final BookingRepository bookingRepository;
     @PostMapping("/performances")
     public Performance createPerformance(
             @RequestBody Performance performance) {
@@ -40,4 +45,10 @@ public class AdminController {
                 50
         );
     }
+
+
+
+
+
+
 }

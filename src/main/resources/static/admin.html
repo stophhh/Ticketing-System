@@ -6,192 +6,229 @@
 
     <style>
         * {
-          box-sizing: border-box;
-          font-family: "Pretendard", Arial, sans-serif;
+            box-sizing: border-box;
+            font-family: "Pretendard", Arial, sans-serif;
         }
 
         body {
-          margin: 0;
-          background: #f8fafc;
-          color: #111;
+            margin: 0;
+            background: #f8fafc;
+            color: #111;
         }
 
         header {
-          height: 70px;
-          background: white;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 80px;
-          border-bottom: 1px solid #eee;
+            height: 70px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 80px;
+            border-bottom: 1px solid #eee;
         }
 
         .logo {
-          text-decoration: none;
-          font-size: 24px;
-          font-weight: 900;
-          color: #2563eb;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 900;
+            color: #2563eb;
         }
 
         nav a {
-          margin-left: 25px;
-          text-decoration: none;
-          color: #444;
-          font-weight: 600;
+            margin-left: 25px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
         }
 
         nav a:hover {
-          color: #2563eb;
+            color: #2563eb;
         }
 
         .container {
-          max-width: 1100px;
-          margin: 50px auto;
-          padding: 0 20px;
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
         }
 
         .page-title {
-          font-size: 32px;
-          margin-bottom: 10px;
+            font-size: 32px;
+            margin-bottom: 10px;
         }
 
         .page-desc {
-          color: #666;
-          margin-bottom: 30px;
+            color: #666;
+            margin-bottom: 30px;
         }
 
         .admin-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
 
-        .box {
-          background: white;
-          border-radius: 18px;
-          padding: 30px;
-          border: 1px solid #eee;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-        }
-
-        .box h2 {
-          margin-top: 0;
-          color: #2563eb;
-        }
-
-        label {
-          display: block;
-          margin-top: 15px;
-          margin-bottom: 6px;
-          font-weight: bold;
-          color: #333;
-        }
-
-        input, textarea, select {
-          width: 100%;
-          padding: 13px;
-          border: 1px solid #ddd;
-          border-radius: 10px;
-          outline: none;
-          font-size: 15px;
-        }
-
-        textarea {
-          height: 100px;
-          resize: none;
-        }
-
-        button {
-          width: 100%;
-          margin-top: 22px;
-          padding: 14px;
-          border: none;
-          border-radius: 10px;
-          background: #2563eb;
-          color: white;
-          font-weight: bold;
-          cursor: pointer;
-          font-size: 15px;
-        }
-
-        button:hover {
-          background: #1d4ed8;
-        }
-
-        .danger {
-          background: #dc2626;
-        }
-
-        .danger:hover {
-          background: #b91c1c;
-        }
-
-        .message {
-          margin-top: 15px;
-          font-weight: bold;
+        .box, .list {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
         }
 
         .list {
-          margin-top: 35px;
-          background: white;
-          border-radius: 18px;
-          padding: 25px;
-          border: 1px solid #eee;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            margin-top: 35px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .danger:hover {
+            background: #b91c1c;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-buttons button {
+            width: auto;
+            margin-top: 0;
+            padding: 10px 20px;
+        }
+
+        .performance-item,
+        .booking-item,
+        .qna-item {
+            border-bottom: 1px solid #eee;
+            padding: 18px 0;
+        }
+
+        .performance-item:last-child,
+        .booking-item:last-child,
+        .qna-item:last-child {
+            border-bottom: none;
         }
 
         .performance-item {
-          border-bottom: 1px solid #eee;
-          padding: 18px 0;
-          display: flex;
-          justify-content: space-between;
-          gap: 20px;
-          align-items: center;
-        }
-
-        .performance-item:last-child {
-          border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: center;
         }
 
         .item-title {
-          font-weight: bold;
-          font-size: 18px;
+            font-weight: bold;
+            font-size: 18px;
         }
 
         .item-info {
-          color: #666;
-          font-size: 14px;
-          margin-top: 5px;
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
         }
 
         .item-actions {
-          display: flex;
-          gap: 10px;
-          min-width: 240px;
+            display: flex;
+            gap: 10px;
+            min-width: 240px;
         }
 
         .item-actions button {
-          margin-top: 0;
-          padding: 10px;
+            margin-top: 0;
+            padding: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .confirmed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .cancel {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         @media (max-width: 900px) {
-          .admin-grid {
-            grid-template-columns: 1fr;
-          }
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
 
-          header {
-            padding: 0 20px;
-          }
+            header {
+                padding: 0 20px;
+            }
 
-          .performance-item {
-            flex-direction: column;
-            align-items: flex-start;
-          }
+            .performance-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-          .item-actions {
-            width: 100%;
-          }
+            .item-actions {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -208,7 +245,7 @@
 
 <div class="container">
     <h1 class="page-title">관리자 페이지</h1>
-    <p class="page-desc">공연을 등록하고, 공연별 좌석을 자동 생성할 수 있습니다.</p>
+    <p class="page-desc">공연 등록, 좌석 생성, 예매 관리, 고객센터 문의를 관리할 수 있습니다.</p>
 
     <div class="admin-grid">
         <div class="box">
@@ -265,8 +302,26 @@
     </div>
 
     <div class="list">
-        <h2>등록된 공연 목록</h2>
-        <div id="performanceList"></div>
+        <div class="tab-buttons">
+            <button onclick="showTab('performanceTab')">공연 관리</button>
+            <button onclick="showTab('bookingTab')">예매 관리</button>
+            <button onclick="showTab('qnaTab')">고객센터</button>
+        </div>
+
+        <div id="performanceTab">
+            <h2>등록된 공연 목록</h2>
+            <div id="performanceList"></div>
+        </div>
+
+        <div id="bookingTab" style="display:none;">
+            <h2>사용자 예매 관리</h2>
+            <div id="bookingList"></div>
+        </div>
+
+        <div id="qnaTab" style="display:none;">
+            <h2>고객센터 문의글</h2>
+            <div id="qnaList"></div>
+        </div>
     </div>
 </div>
 
@@ -274,131 +329,347 @@
     let performances = [];
 
     async function loadPerformances() {
-      const response = await fetch("/performances");
-      performances = await response.json();
+        try {
+            const response = await fetch("/performances");
 
-      renderPerformanceList();
-      renderPerformanceSelect();
+            if (!response.ok) {
+                performances = [];
+                renderPerformanceList();
+                renderPerformanceSelect();
+                return;
+            }
+
+            performances = await response.json();
+
+            renderPerformanceList();
+            renderPerformanceSelect();
+
+        } catch (error) {
+            console.error(error);
+            performances = [];
+            renderPerformanceList();
+            renderPerformanceSelect();
+        }
     }
 
     function renderPerformanceSelect() {
-      const select = document.getElementById("seatPerformanceSelect");
-      select.innerHTML = "";
+        const select = document.getElementById("seatPerformanceSelect");
+        select.innerHTML = "";
 
-      performances.forEach(p => {
-        const option = document.createElement("option");
-        option.value = p.performanceId;
-        option.innerText = p.title;
-        select.appendChild(option);
-      });
+        if (performances.length === 0) {
+            const option = document.createElement("option");
+            option.innerText = "등록된 공연 없음";
+            option.value = "";
+            select.appendChild(option);
+            return;
+        }
+
+        performances.forEach(p => {
+            const option = document.createElement("option");
+            option.value = p.performanceId;
+            option.innerText = p.title;
+            select.appendChild(option);
+        });
     }
 
     function renderPerformanceList() {
-      const list = document.getElementById("performanceList");
-      list.innerHTML = "";
+        const list = document.getElementById("performanceList");
+        list.innerHTML = "";
 
-      if (performances.length === 0) {
-        list.innerHTML = "<p>등록된 공연이 없습니다.</p>";
-        return;
-      }
+        if (performances.length === 0) {
+            list.innerHTML = "<p>등록된 공연이 없습니다.</p>";
+            return;
+        }
 
-      performances.forEach(p => {
-        const date = p.performanceDate
-          ? new Date(p.performanceDate).toLocaleString("ko-KR")
-          : "날짜 미정";
+        performances.forEach(p => {
+            const date = p.performanceDate
+                ? new Date(p.performanceDate).toLocaleString("ko-KR")
+                : "날짜 미정";
 
-        const item = document.createElement("div");
-        item.className = "performance-item";
+            const item = document.createElement("div");
+            item.className = "performance-item";
 
-        item.innerHTML = `
-          <div>
-            <div class="item-title">${p.title}</div>
-            <div class="item-info">
-              ${p.category || '카테고리 없음'} · ${p.place || '장소 미정'} · ${date}
-            </div>
-            <div class="item-info">
-              가격: ${(p.price || 0).toLocaleString()}원
-            </div>
-          </div>
+            item.innerHTML = `
+                <div>
+                    <div class="item-title">${p.title}</div>
+                    <div class="item-info">
+                        ${p.category || "카테고리 없음"} · ${p.place || "장소 미정"} · ${date}
+                    </div>
+                    <div class="item-info">
+                        가격: ${(p.price || 0).toLocaleString()}원
+                    </div>
+                </div>
 
-          <div class="item-actions">
-            <button onclick="createSeatsFor(${p.performanceId})">좌석 생성</button>
-            <button class="danger" onclick="deletePerformance(${p.performanceId})">삭제</button>
-          </div>
-        `;
+                <div class="item-actions">
+                    <button onclick="createSeatsFor(${p.performanceId})">좌석 생성</button>
+                    <button class="danger" onclick="deletePerformance(${p.performanceId})">삭제</button>
+                </div>
+            `;
 
-        list.appendChild(item);
-      });
+            list.appendChild(item);
+        });
     }
 
     async function createPerformance() {
-      const performance = {
-        title: document.getElementById("title").value,
-        category: document.getElementById("category").value,
-        place: document.getElementById("place").value,
-        performanceDate: document.getElementById("performanceDate").value,
-        price: Number(document.getElementById("price").value),
-        posterUrl: document.getElementById("posterUrl").value,
-        description: document.getElementById("description").value
-      };
+       const performance = {
+    title: document.getElementById("title").value,
+    category: document.getElementById("category").value,
+    place: document.getElementById("place").value,
+    performanceDate: document.getElementById("performanceDate").value,
+    price: Number(document.getElementById("price").value),
+    posterUrl: document.getElementById("posterUrl").value,
+    description: document.getElementById("description").value
+};
 
-      const response = await fetch("/admin/performances", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(performance)
-      });
+        const response = await fetch("/admin/performances", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(performance)
+        });
 
-      if (response.ok) {
-        document.getElementById("createMessage").innerText = "공연 등록 완료";
-        document.getElementById("createMessage").style.color = "green";
-        await loadPerformances();
-      } else {
-        document.getElementById("createMessage").innerText = "공연 등록 실패";
-        document.getElementById("createMessage").style.color = "red";
-      }
+        if (response.ok) {
+            document.getElementById("createMessage").innerText = "공연 등록 완료";
+            document.getElementById("createMessage").style.color = "green";
+            await loadPerformances();
+        } else {
+            document.getElementById("createMessage").innerText = "공연 등록 실패";
+            document.getElementById("createMessage").style.color = "red";
+        }
     }
 
     async function createSeats() {
-      const id = document.getElementById("seatPerformanceSelect").value;
-      await createSeatsFor(id);
+        const id = document.getElementById("seatPerformanceSelect").value;
+
+        if (!id) {
+            alert("공연을 먼저 등록하세요.");
+            return;
+        }
+
+        await createSeatsFor(id);
     }
 
     async function createSeatsFor(id) {
-      const vip = document.getElementById("vipCount").value || 20;
-      const r = document.getElementById("rCount").value || 30;
-      const s = document.getElementById("sCount").value || 50;
+        const vip = document.getElementById("vipCount").value || 20;
+        const r = document.getElementById("rCount").value || 30;
+        const s = document.getElementById("sCount").value || 50;
 
-      const response = await fetch(
-        `/admin/performances/${id}/seats?vipCount=${vip}&rCount=${r}&sCount=${s}`,
-        { method: "POST" }
-      );
+        const response = await fetch(
+            `/admin/performances/${id}/seats?vipCount=${vip}&rCount=${r}&sCount=${s}`,
+            { method: "POST" }
+        );
 
-      if (response.ok) {
-        document.getElementById("seatMessage").innerText = "좌석 생성 완료";
-        document.getElementById("seatMessage").style.color = "green";
-      } else {
-        document.getElementById("seatMessage").innerText = "좌석 생성 실패";
-        document.getElementById("seatMessage").style.color = "red";
-      }
+        if (response.ok) {
+            document.getElementById("seatMessage").innerText = "좌석 생성 완료";
+            document.getElementById("seatMessage").style.color = "green";
+        } else {
+            document.getElementById("seatMessage").innerText = "좌석 생성 실패";
+            document.getElementById("seatMessage").style.color = "red";
+        }
     }
 
     async function deletePerformance(id) {
-      if (!confirm("정말 삭제하시겠습니까?")) return;
+        if (!confirm("정말 삭제하시겠습니까?")) return;
 
-      const response = await fetch(`/admin/performances/${id}`, {
+        const response = await fetch(`/admin/performances/${id}`, {
+            method: "DELETE"
+        });
+
+        if (response.ok) {
+            await loadPerformances();
+        } else {
+            alert("삭제 실패");
+        }
+    }
+
+ async function loadBookings() {
+    const list = document.getElementById("bookingList");
+
+    try {
+        const response = await fetch("/bookings");
+
+        if (!response.ok) {
+            list.innerHTML = "<p>예매 정보를 불러오지 못했습니다.</p>";
+            return;
+        }
+
+        const bookings = await response.json();
+
+        if (bookings.length === 0) {
+            list.innerHTML = "<p>예매 내역이 없습니다.</p>";
+            return;
+        }
+
+        renderBookings(bookings);
+
+    } catch (error) {
+        console.error(error);
+        list.innerHTML = "<p>서버 연결 실패</p>";
+    }
+}
+
+function renderBookings(bookings) {
+    const list = document.getElementById("bookingList");
+    list.innerHTML = "";
+
+    bookings.forEach(b => {
+        list.innerHTML += `
+            <div class="booking-item">
+                <div class="item-title">예매번호 #${b.bookingId}</div>
+
+                <div class="item-info">사용자: ${b.username}</div>
+
+                <div class="item-info">공연: ${b.performanceTitle}</div>
+
+                <div class="item-info">좌석: ${b.seatNumbers}</div>
+
+                <div class="item-info">
+                    상태:
+                    <span class="status ${getStatusClass(b.status)}">
+                        ${b.status}
+                    </span>
+                </div>
+
+                <div class="item-actions" style="margin-top:10px;">
+                    <button class="danger" onclick="cancelBooking(${b.bookingId})">
+                        강제 취소
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+async function cancelBooking(id) {
+    if (!confirm("예매를 취소하시겠습니까?")) return;
+
+    const response = await fetch(`/bookings/${id}`, {
         method: "DELETE"
-      });
+    });
 
-      if (response.ok) {
-        await loadPerformances();
-      } else {
-        alert("삭제 실패");
-      }
+    if (response.ok) {
+        alert("취소 완료");
+        loadBookings();
+    } else {
+        alert("취소 실패");
+    }
+}
+
+
+    async function loadQna() {
+        try {
+            const response = await fetch("/admin/qna");
+
+            if (!response.ok) {
+                renderSampleQna();
+                return;
+            }
+
+            const qnas = await response.json();
+
+            if (qnas.length === 0) {
+                document.getElementById("qnaList").innerHTML = "<p>문의글이 없습니다.</p>";
+                return;
+            }
+
+            renderQna(qnas);
+
+        } catch (error) {
+            console.error(error);
+            renderSampleQna();
+        }
+    }
+
+    function renderQna(qnas) {
+        const list = document.getElementById("qnaList");
+        list.innerHTML = "";
+
+        qnas.forEach(q => {
+            list.innerHTML += `
+                <div class="qna-item">
+                    <div class="item-title">${q.title}</div>
+                    <div class="item-info">작성자: ${q.username}</div>
+                    <div class="item-info">내용: ${q.content}</div>
+                    <div class="item-info">
+                        상태:
+                        <span class="status ${q.answered ? "confirmed" : "pending"}">
+                            ${q.answered ? "답변 완료" : "미답변"}
+                        </span>
+                    </div>
+
+                    <div class="item-actions" style="margin-top:10px;">
+                        <button onclick="answerQna(${q.id})">답변 완료</button>
+                        <button class="danger" onclick="deleteQna(${q.id})">삭제</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function renderSampleQna() {
+        const sampleQna = [
+            {
+                id: 1,
+                username: "user1",
+                title: "예매 취소 문의",
+                content: "예매 취소는 어디서 하나요?",
+                answered: false
+            },
+            {
+                id: 2,
+                username: "user2",
+                title: "좌석 문의",
+                content: "VIP 좌석 위치가 궁금합니다.",
+                answered: true
+            }
+        ];
+
+        renderQna(sampleQna);
+    }
+
+    async function answerQna(id) {
+        alert("답변 완료 처리 기능은 백엔드 API 추가 후 연결하면 됩니다.");
+    }
+
+    async function deleteQna(id) {
+        if (!confirm("삭제하시겠습니까?")) return;
+
+        try {
+            const response = await fetch(`/admin/qna/${id}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                loadQna();
+            } else {
+                alert("백엔드 API가 없어서 실제 삭제는 안 됩니다.");
+            }
+
+        } catch (error) {
+            alert("백엔드 API가 없어서 실제 삭제는 안 됩니다.");
+        }
+    }
+
+    function getStatusClass(status) {
+        if (status === "CONFIRMED" || status === "COMPLETED") return "confirmed";
+        if (status === "PENDING") return "pending";
+        if (status === "CANCELED" || status === "CANCELLED") return "cancel";
+        return "pending";
+    }
+
+    function showTab(tabId) {
+        document.getElementById("performanceTab").style.display = "none";
+        document.getElementById("bookingTab").style.display = "none";
+        document.getElementById("qnaTab").style.display = "none";
+
+        document.getElementById(tabId).style.display = "block";
     }
 
     loadPerformances();
+    loadBookings();
+    loadQna();
+    showTab("performanceTab");
 </script>
 
 </body>

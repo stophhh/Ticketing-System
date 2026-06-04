@@ -6,6 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import com.example.ticketing.entity.Seat;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/bookings")
 @RequiredArgsConstructor
@@ -38,5 +43,30 @@ public class BookingController {
         private Long userId;
         private Long performanceId;
         private List<Long> seatIds;
+    }
+
+    @GetMapping
+    public List<Map<String, Object>> getAllBookings() {
+        return bookingService.getAllBookings()
+                .stream()
+                .map(b -> {
+                    Map<String, Object> map = new HashMap<>();
+
+                    map.put("bookingId", b.getBookingId());
+                    map.put("username", b.getUser().getUsername());
+                    map.put("performanceTitle", b.getPerformance().getTitle());
+
+                    map.put("seatNumbers",
+                            b.getSeats()
+                                    .stream()
+                                    .map(Seat::getSeatNumber)
+                                    .collect(Collectors.joining(", "))
+                    );
+
+                    map.put("status", b.getStatus().name());
+
+                    return map;
+                })
+                .toList();
     }
 }
