@@ -2,6 +2,9 @@
 
 https://ticketing-system-production-36ab.up.railway.app/mainpage.html
 
+관리자페이지는 테스트 편의상 권한을 해제함
+
+
 ## Project Overview
 Online ticket reservation system developed with Spring Boot and MySQL.
 
