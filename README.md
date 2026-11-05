@@ -4,6 +4,8 @@
 
 **공연 조회부터 입장 대기·좌석 선점·예매·모의 결제까지 구현한 개인 프로젝트**
 
+![Java](https://img.shields.io/badge/Java-17-ED8B00) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F) ![Tests](https://github.com/stophhh/Ticketing-System/actions/workflows/ci.yml/badge.svg?branch=main)
+
 Java 17 · Spring Boot 3.5 · Spring Security · JPA · MySQL
 
 [핵심 설계](docs/ARCHITECTURE.md) · [테스트와 검증 범위](docs/VALIDATION.md) · [기존 DB 적용 안내](docs/MIGRATION.md)
@@ -107,7 +109,7 @@ Windows PowerShell:
 
 ### MySQL 환경
 
-기본 프로필은 기존 `application.properties`의 환경변수로 MySQL에 연결합니다. 실제 배포 전에 [스키마 변경과 적용 순서](docs/MIGRATION.md)를 확인해야 합니다. 이전 배포 링크를 새 코드의 검증 완료 서비스로 제시하지 않습니다.
+기본 프로필은 `application.properties`의 환경변수로 MySQL에 연결합니다. **포트폴리오 체험은 위의 로컬 데모를 기준**으로 하며 상시 운영하는 공개 서비스는 제공하지 않습니다. 기존 DB에 배포하려면 [스키마 변경과 적용 순서](docs/MIGRATION.md)를 먼저 확인합니다.
 
 ## 테스트
 
@@ -119,7 +121,7 @@ Windows PowerShell:
 **통합 테스트 26개**는 인증·소유권·입장 허가·선점 만료·동시 요청·금액 검증·취소 시 상태 복구를 확인합니다.
 결과 HTML은 `build/reports/tests/test/index.html`에서 확인합니다. GitHub Actions에도 같은 빌드·테스트 명령을 구성했습니다.
 
-검증은 **H2 환경의 통합 테스트**를 기준으로 합니다. MySQL 운영 환경의 동시성·부하 성능이나 분산 대기열을 입증한 결과는 아닙니다. [검증 범위](docs/VALIDATION.md)
+동일한 26개 시나리오를 **H2와 별도 로컬 MySQL 9.6**에서 통과했습니다. GitHub Actions는 H2와 MySQL 8.4 작업을 분리해 실행합니다. 운영 환경의 부하 성능이나 분산 대기열을 입증한 결과는 아닙니다. [검증 범위](docs/VALIDATION.md)
 
 ## 구조
 
@@ -140,7 +142,7 @@ src/test/                   # MockMvc + H2 통합 테스트
 
 ## 남은 과제
 
-- 기존 MySQL 데이터 마이그레이션 및 운영 환경에서의 잠금 검증
+- 실제 배포 시 기존 MySQL 데이터 마이그레이션 및 운영 환경 검증
 - 분산 환경에서 사용할 대기열·입장량 제어와 부하 테스트
 - 실제 PG 도입 시 서버 간 승인·Webhook 검증·멱등키 설계
 - 운영용 관리자 계정 관리, 관측 지표와 알림

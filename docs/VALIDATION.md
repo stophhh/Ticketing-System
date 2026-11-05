@@ -22,9 +22,24 @@
 - 과거 취소 재요청이 새 예매의 좌석을 해제하지 않는지
 - 관리자 좌석 수 입력 반영, 중복 생성 차단
 
+## MySQL 검증
+
+2026-11-05에 기존 서비스와 분리된 로컬 MySQL 9.6.0의 새 DB에서 같은 26개 테스트를 실행했고, 실패·오류 없이 통과했습니다. CI에서도 MySQL 8.4 서비스를 별도로 생성해 같은 테스트를 실행합니다. 기존 Railway DB를 변경하거나 데이터를 이전한 결과는 아닙니다.
+
+아래 명령은 스키마를 생성·삭제하므로 **폐기 가능한 로컬 `ticketing_test` DB에서만** 실행합니다. 태스크도 localhost/127.0.0.1과 해당 DB 이름만 허용합니다. DB를 먼저 만들고 테스트 전용 계정을 지정합니다.
+
+```bash
+TICKETING_TEST_MYSQL_URL='jdbc:mysql://127.0.0.1:3306/ticketing_test?serverTimezone=UTC' \
+TICKETING_TEST_MYSQL_USER='test_user' \
+TICKETING_TEST_MYSQL_PASSWORD='테스트 전용 비밀번호' \
+./gradlew mysqlTest
+```
+
+결과는 `build/reports/tests/mysqlTest/index.html`에 생성됩니다.
+
 ## 범위의 한계
 
-동시성 테스트는 같은 프로세스의 두 요청과 H2 데이터베이스로 확인합니다.
-MySQL의 잠금·격리 수준, 다중 인스턴스 환경, 부하 처리량을 검증한 결과가 아닙니다.
+동시성 테스트는 같은 프로세스의 두 요청으로 단일 좌석의 중복 선점·예매를 확인합니다.
+새 MySQL DB에서의 기능 검증이며, 운영 중인 기존 DB의 마이그레이션·여러 격리 수준·다중 인스턴스·부하 처리량을 검증한 결과는 아닙니다.
 실제 PG 승인·환불, 외부 결제 Webhook 검증도 구현하지 않았습니다.
 기존 데이터베이스의 마이그레이션은 [별도 안내](MIGRATION.md)를 따라 확인해야 합니다.

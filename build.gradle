@@ -38,3 +38,23 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// Only a disposable database named ticketing_test is accepted: this task recreates its schema.
+tasks.register('mysqlTest', Test) {
+    description = 'Run integration tests against a disposable local MySQL database.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    def testUrl = providers.environmentVariable('TICKETING_TEST_MYSQL_URL')
+    doFirst {
+        def url = testUrl.orNull
+        if (url == null || !(url ==~ /jdbc:mysql:\/\/(localhost|127\.0\.0\.1):[0-9]+\/ticketing_test(\?.*)?/)) {
+            throw new GradleException('Set TICKETING_TEST_MYSQL_URL to a disposable localhost database named ticketing_test.')
+        }
+        systemProperty 'spring.datasource.url', url
+        systemProperty 'spring.datasource.username', providers.environmentVariable('TICKETING_TEST_MYSQL_USER').getOrElse('root')
+        systemProperty 'spring.datasource.password', providers.environmentVariable('TICKETING_TEST_MYSQL_PASSWORD').getOrElse('')
+        systemProperty 'spring.datasource.driver-class-name', 'com.mysql.cj.jdbc.Driver'
+    }
+}
