@@ -231,6 +231,8 @@
             }
         }
     </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -245,7 +247,7 @@
 
 <div class="container">
     <h1 class="page-title">관리자 페이지</h1>
-    <p class="page-desc">공연 등록, 좌석 생성, 예매 관리, 고객센터 문의를 관리할 수 있습니다.</p>
+    <p class="page-desc">공연 등록, 좌석 생성과 예매 내역을 관리합니다.</p>
 
     <div class="admin-grid">
         <div class="box">
@@ -305,7 +307,7 @@
         <div class="tab-buttons">
             <button onclick="showTab('performanceTab')">공연 관리</button>
             <button onclick="showTab('bookingTab')">예매 관리</button>
-            <button onclick="showTab('qnaTab')">고객센터</button>
+
         </div>
 
         <div id="performanceTab">
@@ -316,11 +318,6 @@
         <div id="bookingTab" style="display:none;">
             <h2>사용자 예매 관리</h2>
             <div id="bookingList"></div>
-        </div>
-
-        <div id="qnaTab" style="display:none;">
-            <h2>고객센터 문의글</h2>
-            <div id="qnaList"></div>
         </div>
     </div>
 </div>
@@ -391,9 +388,9 @@
 
             item.innerHTML = `
                 <div>
-                    <div class="item-title">${p.title}</div>
+                    <div class="item-title">${escapeHtml(p.title)}</div>
                     <div class="item-info">
-                        ${p.category || "카테고리 없음"} · ${p.place || "장소 미정"} · ${date}
+                        ${escapeHtml(p.category || "카테고리 없음")} · ${escapeHtml(p.place || "장소 미정")} · ${date}
                     </div>
                     <div class="item-info">
                         가격: ${(p.price || 0).toLocaleString()}원
@@ -518,16 +515,16 @@ function renderBookings(bookings) {
             <div class="booking-item">
                 <div class="item-title">예매번호 #${b.bookingId}</div>
 
-                <div class="item-info">사용자: ${b.username}</div>
+                <div class="item-info">사용자: ${escapeHtml(b.username)}</div>
 
-                <div class="item-info">공연: ${b.performanceTitle}</div>
+                <div class="item-info">공연: ${escapeHtml(b.performanceTitle)}</div>
 
-                <div class="item-info">좌석: ${b.seatNumbers}</div>
+                <div class="item-info">좌석: ${escapeHtml(b.seatNumbers)}</div>
 
                 <div class="item-info">
                     상태:
                     <span class="status ${getStatusClass(b.status)}">
-                        ${b.status}
+                        ${statusLabel(b.status)}
                     </span>
                 </div>
 
@@ -557,100 +554,6 @@ async function cancelBooking(id) {
 }
 
 
-    async function loadQna() {
-        try {
-            const response = await fetch("/admin/qna");
-
-            if (!response.ok) {
-                renderSampleQna();
-                return;
-            }
-
-            const qnas = await response.json();
-
-            if (qnas.length === 0) {
-                document.getElementById("qnaList").innerHTML = "<p>문의글이 없습니다.</p>";
-                return;
-            }
-
-            renderQna(qnas);
-
-        } catch (error) {
-            console.error(error);
-            renderSampleQna();
-        }
-    }
-
-    function renderQna(qnas) {
-        const list = document.getElementById("qnaList");
-        list.innerHTML = "";
-
-        qnas.forEach(q => {
-            list.innerHTML += `
-                <div class="qna-item">
-                    <div class="item-title">${q.title}</div>
-                    <div class="item-info">작성자: ${q.username}</div>
-                    <div class="item-info">내용: ${q.content}</div>
-                    <div class="item-info">
-                        상태:
-                        <span class="status ${q.answered ? "confirmed" : "pending"}">
-                            ${q.answered ? "답변 완료" : "미답변"}
-                        </span>
-                    </div>
-
-                    <div class="item-actions" style="margin-top:10px;">
-                        <button onclick="answerQna(${q.id})">답변 완료</button>
-                        <button class="danger" onclick="deleteQna(${q.id})">삭제</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    function renderSampleQna() {
-        const sampleQna = [
-            {
-                id: 1,
-                username: "user1",
-                title: "예매 취소 문의",
-                content: "예매 취소는 어디서 하나요?",
-                answered: false
-            },
-            {
-                id: 2,
-                username: "user2",
-                title: "좌석 문의",
-                content: "VIP 좌석 위치가 궁금합니다.",
-                answered: true
-            }
-        ];
-
-        renderQna(sampleQna);
-    }
-
-    async function answerQna(id) {
-        alert("답변 완료 처리 기능은 백엔드 API 추가 후 연결하면 됩니다.");
-    }
-
-    async function deleteQna(id) {
-        if (!confirm("삭제하시겠습니까?")) return;
-
-        try {
-            const response = await fetch(`/admin/qna/${id}`, {
-                method: "DELETE"
-            });
-
-            if (response.ok) {
-                loadQna();
-            } else {
-                alert("백엔드 API가 없어서 실제 삭제는 안 됩니다.");
-            }
-
-        } catch (error) {
-            alert("백엔드 API가 없어서 실제 삭제는 안 됩니다.");
-        }
-    }
-
     function getStatusClass(status) {
         if (status === "CONFIRMED" || status === "COMPLETED") return "confirmed";
         if (status === "PENDING") return "pending";
@@ -661,14 +564,14 @@ async function cancelBooking(id) {
     function showTab(tabId) {
         document.getElementById("performanceTab").style.display = "none";
         document.getElementById("bookingTab").style.display = "none";
-        document.getElementById("qnaTab").style.display = "none";
+
 
         document.getElementById(tabId).style.display = "block";
     }
 
     loadPerformances();
     loadBookings();
-    loadQna();
+
     showTab("performanceTab");
 </script>
 

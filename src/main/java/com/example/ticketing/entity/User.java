@@ -10,20 +10,18 @@ import lombok.Setter;
 @Setter
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(unique = true)
-    private String username;
+  @Column(unique = true)
+  private String username;
 
-    private String password;
+  @com.fasterxml.jackson.annotation.JsonIgnore private String password;
 
-    private String ip;
+  @com.fasterxml.jackson.annotation.JsonIgnore private String ip;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserType userType;
-
-
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private UserType userType;
 }

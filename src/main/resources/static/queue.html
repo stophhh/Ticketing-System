@@ -128,6 +128,8 @@
             transform: translateY(-2px);
         }
     </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -139,13 +141,12 @@
         <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
-        <a href="#">고객센터</a>
     </nav>
 </header>
 
 <section class="hero">
     <h1 id="performanceTitle">JH CONCERT</h1>
-    <p>접속자가 많아 순서대로 예매 페이지에 입장하고 있습니다</p>
+    <p>서버에서 입장 순서를 확인하고 있습니다</p>
 </section>
 
 <div class="container">
@@ -154,16 +155,16 @@
 
     <div class="info-box">
         <div class="label">내 앞 대기 인원</div>
-        <div class="value" id="peopleAhead">57명</div>
+        <div class="value" id="peopleAhead">확인 중</div>
     </div>
 
     <div class="info-box">
         <div class="label">예상 남은 시간</div>
-        <div class="value" id="remainingTime">02:50</div>
+        <div class="value" id="remainingTime">확인 중</div>
     </div>
 
     <div class="notice" id="noticeText">
-        현재 접속자가 많아 순서대로 입장 중입니다.<br>
+        순서가 되면 좌석 선택 화면으로 이동할 수 있습니다.<br>
         대기열이 진행되는 동안 페이지를 새로고침하지 마세요.
     </div>
 
@@ -178,68 +179,41 @@
 </div>
 
 <script>
-    const params = new URLSearchParams(location.search);
-    const performanceId = params.get("performanceId");
-
-    let queueId = null;
-
-    const peopleAhead = document.getElementById("peopleAhead");
-    const remainingTime = document.getElementById("remainingTime");
-    const readyText = document.getElementById("readyText");
-    const enterBtn = document.getElementById("enterBtn");
-    const noticeText = document.getElementById("noticeText");
-
-    if (!performanceId) {
-        alert("공연 정보가 없습니다.");
-        location.href = "mainpage.html";
-    }
-
-    async function loadPerformance() {
-        try {
-            const response = await fetch("/performances/" + performanceId);
-            const performance = await response.json();
-            document.getElementById("performanceTitle").innerText = performance.title;
-        } catch (e) {
-            document.getElementById("performanceTitle").innerText = "공연 정보";
-        }
-    }
-
-    async function joinQueue() {
-        const response = await fetch("/queue/join", {
-            method: "POST"
-        });
-
-        const data = await response.json();
-        queueId = data.id;
-
-        checkQueue();
-        setInterval(checkQueue, 2000);
-    }
-
-    async function checkQueue() {
-        if (!queueId) return;
-
-        const response = await fetch(`/queue/check?queueId=${queueId}`);
-        const people = await response.text();
-
-        peopleAhead.textContent = people + "명";
-        remainingTime.textContent = "계산 중";
-
-        if (parseInt(people) <= 0) {
-            peopleAhead.textContent = "0명";
-            remainingTime.textContent = "00:00";
-            readyText.textContent = "입장 가능합니다.";
-            noticeText.textContent = "이제 좌석 선택 페이지로 이동할 수 있습니다.";
-            enterBtn.style.display = "block";
-        }
-    }
-
-    function enterBooking() {
-        location.href = "seat.html?performanceId=" + performanceId;
-    }
-
-    loadPerformance();
-    joinQueue();
+const params=new URLSearchParams(location.search);
+const performanceId=params.get('performanceId');
+const peopleAhead=document.getElementById('peopleAhead');
+const remainingTime=document.getElementById('remainingTime');
+const readyText=document.getElementById('readyText');
+const enterBtn=document.getElementById('enterBtn');
+const noticeText=document.getElementById('noticeText');
+let queueId,timer;
+async function checkQueue() {
+  try {
+    const res=await fetch(`/queue/check?queueId=${queueId}`);const data=await res.json();
+    peopleAhead.textContent=data.peopleAhead+'명';
+    const left=data.expiresAt ? Math.max(0,Math.floor((Date.parse(data.expiresAt+'Z')-Date.now())/1000)) : 0;
+    if(data.status==='ALLOWED' && left>0) {
+      readyText.textContent='입장 가능합니다.';remainingTime.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+      noticeText.textContent='제한 시간 안에 좌석을 선택해주세요.';enterBtn.style.display='block';
+    } else if(data.status==='EXPIRED' || (data.status==='ALLOWED' && left===0)) {
+      clearInterval(timer);enterBtn.style.display='none';readyText.textContent='입장 시간이 만료되었습니다.';
+      noticeText.textContent='페이지를 새로고침하여 다시 대기해주세요.';
+    } else { remainingTime.textContent='순서 대기 중';enterBtn.style.display='none'; }
+  } catch(e) {clearInterval(timer);showApiError(e.message);}
+}
+async function enterBooking() {
+  try {await fetch(`/queue/enter?queueId=${queueId}`,{method:'POST'});location.href='seat.html?performanceId='+performanceId;}
+  catch(e) {showApiError(e.message);}
+}
+(async()=>{
+  if(!performanceId) {location.href='mainpage.html';return;}
+  try {
+    const perf=await (await fetch('/performances/'+performanceId)).json();
+    document.getElementById('performanceTitle').textContent=perf.title;
+    const entry=await (await fetch('/queue/join?performanceId='+performanceId,{method:'POST'})).json();
+    queueId=entry.id;await checkQueue();timer=setInterval(checkQueue,2000);
+  } catch(e) {showApiError(e.message);}
+})();
 </script>
 
 </body>

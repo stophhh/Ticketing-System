@@ -151,6 +151,8 @@
         }
         .btn-primary:hover { background: #2563eb; }
     </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -161,7 +163,6 @@
         <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
-        <a href="#">고객센터</a>
     </nav>
 </header>
 
@@ -172,7 +173,7 @@
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
 
-        <h1>결제가 완료되었습니다</h1>
+        <h1>모의 결제가 완료되었습니다</h1>
         <p class="sub">예매 내역은 마이페이지에서 확인하실 수 있습니다</p>
 
         <div class="info-box">
@@ -193,15 +194,19 @@
 </main>
 
 <script>
-    const params = new URLSearchParams(location.search);
-
-    document.getElementById("perfName").innerText  = params.get("perfName")  || "-";
-    document.getElementById("perfDate").innerText  = params.get("perfDate")  || "-";
-    document.getElementById("seats").innerText     = params.get("seats")     || "-";
-    document.getElementById("bookingId").innerText = params.get("bookingId") || "-";
-
-    const amount = Number(params.get("amount") || 0);
-    document.getElementById("amount").innerText = amount.toLocaleString() + "원";
+(async()=>{
+  const id=new URLSearchParams(location.search).get('bookingId');
+  if(!id) {location.href='mypage.html';return;}
+  try {
+    const booking=await (await fetch('/bookings/'+id)).json();
+    if(booking.status!=='COMPLETED') {location.href='mypage.html';return;}
+    document.getElementById('perfName').textContent=booking.performance.title;
+    document.getElementById('perfDate').textContent=new Date(booking.performance.performanceDate).toLocaleString('ko-KR');
+    document.getElementById('seats').textContent=booking.seats.map(s=>s.seatNumber).join(', ');
+    document.getElementById('bookingId').textContent=booking.bookingId;
+    document.getElementById('amount').textContent=booking.seats.reduce((sum,s)=>sum+s.price,0).toLocaleString()+'원';
+  } catch(e) {showApiError(e.message);}
+})();
 </script>
 
 </body>

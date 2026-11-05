@@ -177,6 +177,8 @@
       color: #dc2626;
     }
   </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -187,7 +189,6 @@
     <a href="mypage.html">마이페이지</a>
     <a href="login.html">로그인</a>
     <a href="signup.html">회원가입</a>
-    <a href="#">고객센터</a>
   </nav>
 </header>
 
@@ -195,7 +196,7 @@
   <div class="card">
 
     <div class="card-header">
-      <h1>결제하기</h1>
+      <h1>모의 결제</h1><p style="color:#64748b;line-height:1.6">포트폴리오 체험용입니다. 실제 결제나 금전 거래는 발생하지 않습니다.</p>
     </div>
 
     <!-- 예매 정보 -->
@@ -229,30 +230,40 @@
       <span class="total-amount" id="amount">0원</span>
     </div>
 
-    <button class="pay-btn" onclick="pay()">결제 완료</button>
+    <button class="pay-btn" onclick="pay()" disabled>모의 결제 완료</button>
 
-    <div id="message"></div>
+    <button id="cancelPending" style="display:none" onclick="cancelPendingBooking()">진행 중인 예매 취소</button><div id="message"></div>
 
   </div>
 </main>
 
 <script>
+  async function cancelPendingBooking() {
+    if(!pendingBookingId) return;
+    await fetch(`/bookings/${pendingBookingId}`,{method:'DELETE'});location.href='mypage.html';
+  }
   const params        = new URLSearchParams(location.search);
   const performanceId = params.get("performanceId");
   const seatIdsParam  = params.get("seatIds");
-  const amount        = Number(params.get("amount") || 0);
-  const userId        = localStorage.getItem("userId") || 1;
+  let amount = 0;
+  const userId        = localStorage.getItem("userId");
 
-  window.onload = function () {
-    document.getElementById("amount").innerText = amount.toLocaleString() + "원";
-    document.getElementById("selectedSeats").innerText = seatIdsParam || "없음";
-
-    const seats = seatIdsParam ? seatIdsParam.split(",") : [];
-    document.getElementById("ticketCount").innerText = seats.length + "매";
-
-    // URL 파라미터에 공연 정보가 있으면 표시
-    document.getElementById("perfName").innerText = params.get("perfName") || "JH CONCERT";
-    document.getElementById("perfDate").innerText = params.get("perfDate") || "2026.04.10";
+  window.onload = async function () {
+    try {
+      if(!performanceId || !seatIdsParam) throw new Error('좌석을 먼저 선택하세요.');
+      const performance=await (await fetch('/performances/'+performanceId)).json();
+      const ids=seatIdsParam.split(',').map(Number);
+      const seats=await (await fetch('/seats/performance/'+performanceId)).json();
+      const selected=seats.filter(s=>ids.includes(s.id));
+      if(selected.length!==ids.length) throw new Error('좌석 정보를 확인하세요.');
+      amount=selected.reduce((sum,s)=>sum+s.price,0);
+      document.getElementById('amount').textContent=amount.toLocaleString()+'원';
+      document.getElementById('selectedSeats').textContent=selected.map(s=>s.seatNumber).join(', ');
+      document.getElementById('ticketCount').textContent=selected.length+'매';
+      document.getElementById('perfName').textContent=performance.title;
+      document.getElementById('perfDate').textContent=new Date(performance.performanceDate).toLocaleString('ko-KR');
+      document.querySelector('.pay-btn').disabled=false;
+    } catch(e) {showApiError(e.message);}
   };
 
   function selectOption(el) {
@@ -273,6 +284,7 @@
     }
   }
 
+  let pendingBookingId=null;
   async function pay() {
     const selected = document.querySelector('input[name="payment"]:checked');
     if (!selected)                       { showMessage("결제 수단을 선택해주세요.", "error"); return; }
@@ -286,17 +298,21 @@
 
     try {
       // 1. 예매 생성
+      let booking;
+      if(pendingBookingId) {booking=await (await fetch(`/bookings/${pendingBookingId}`)).json();}
+      else {
       const bookingResponse = await fetch("/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: Number(userId),
           performanceId: Number(performanceId),
           seatIds
         })
       });
       if (!bookingResponse.ok) throw new Error(await bookingResponse.text());
-      const booking = await bookingResponse.json();
+      booking = await bookingResponse.json();
+      pendingBookingId=booking.bookingId;
+      }
 
       // 2. 결제 요청
       const paymentResponse = await fetch("/payments", {
@@ -304,7 +320,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bookingId: booking.bookingId,
-          amount,
+          amount: booking.seats.reduce((sum, seat) => sum + seat.price, 0),
           method: selected.value
         })
       });
@@ -316,13 +332,14 @@
       if (!confirmResponse.ok) throw new Error(await confirmResponse.text());
 
       // 완료 페이지로 이동
-      location.href = `complete.html?bookingId=${booking.bookingId}&paymentId=${payment.id}&amount=${amount}&seats=${seatIdsParam}&perfName=${encodeURIComponent(params.get("perfName") || "JH CONCERT")}&perfDate=${encodeURIComponent(params.get("perfDate") || "2026.04.10")}`;
+      location.href = `complete.html?bookingId=${booking.bookingId}`;
 
     } catch (error) {
       console.error(error);
-      showMessage("결제 처리 중 오류가 발생했습니다: " + error.message, "error");
+      showMessage("처리에 실패했습니다. 아래에서 다시 시도하거나 예매를 취소할 수 있습니다. " + error.message, "error");
+      if(pendingBookingId) document.getElementById("cancelPending").style.display="block";
       btn.disabled = false;
-      btn.innerText = "결제 완료";
+      btn.innerText = "모의 결제 완료";
     }
   }
 </script>

@@ -108,6 +108,8 @@
         line-height: 1.8;
     }
   </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -118,12 +120,11 @@
     <a href="mypage.html">마이페이지</a>
     <a href="login.html">로그인</a>
     <a href="signup.html">회원가입</a>
-    <a href="#">고객센터</a>
   </nav>
 </header>
 
 <div class="container">
-  <img id="poster" src="/images/default.jpg" class="poster" alt="공연 포스터">
+  <img id="poster" src="/images/default.svg" class="poster" alt="공연 포스터">
 
   <div class="info">
     <h1 id="title">공연 정보를 불러오는 중...</h1>
@@ -131,8 +132,8 @@
     <div class="detail">
       공연일자 : <span id="performanceDate">-</span><br>
       공연장소 : <span id="place">-</span><br>
-      관람등급 : 만 12세 이상<br>
-      러닝타임 : 120분<br>
+      안내 : 가상 공연<br>
+      예매 체험용 데이터<br>
       예매 가능 매수 : 1인 최대 4매
     </div>
 
@@ -188,15 +189,9 @@
           alert("공연 상세 정보를 불러오지 못했습니다.");
       });
 
-  function goQueue() {
-    const userId = localStorage.getItem("userId");
-
-    if (!userId) {
-        alert("로그인 후 예매할 수 있습니다.");
-        location.href = "login.html";
-        return;
-    }
-
+  async function goQueue() {
+    const session=await fetch('/users/me');
+    if(!session.ok) {localStorage.setItem('redirectUrl',location.pathname+location.search);location.href='login.html';return;}
     location.href = "queue.html?performanceId=" + performanceId;
   }
 </script>
