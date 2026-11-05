@@ -87,6 +87,8 @@
         background: #dc2626;
     }
   </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -94,10 +96,9 @@
 <header>
   <a href="mainpage.html" class="logo">QuickTicket</a>
   <nav>
-    <a href="main.html">홈</a>
+    <a href="mainpage.html">홈</a>
     <a href="login.html">로그인</a>
     <a href="signup.html">회원가입</a>
-    <a href="#">고객센터</a>
   </nav>
 </header>
 
@@ -110,13 +111,8 @@
   const userId = localStorage.getItem("userId");
   const container = document.querySelector(".container");
 
-  if (!userId) {
-      alert("로그인 후 이용할 수 있습니다.");
-      location.href = "login.html";
-  }
-
   async function loadBookings() {
-      const response = await fetch(`/bookings/user/${userId}`);
+      const response = await fetch("/bookings/me");
       const bookings = await response.json();
 
       container.innerHTML = "<h1>예매 내역</h1>";
@@ -142,16 +138,16 @@
 
           ticket.innerHTML = `
               <div class="ticket-info">
-                <h2>${performance.title}</h2>
+                <h2>${escapeHtml(performance.title)}</h2>
                 예매번호 : ${booking.bookingId}<br>
                 공연일자 : ${date}<br>
-                공연장소 : ${performance.place}<br>
-                좌석 : ${seatNames}<br>
+                공연장소 : ${escapeHtml(performance.place)}<br>
+                좌석 : ${escapeHtml(seatNames)}<br>
                 결제금액 : ${totalPrice.toLocaleString()}원<br>
-                상태 : <span class="status">${booking.status}</span>
+                상태 : <span class="status">${statusLabel(booking.status)}</span>
               </div>
 
-              <button class="cancel-btn" onclick="cancelTicket(${booking.bookingId})">
+              <button class="cancel-btn" onclick="cancelTicket(${booking.bookingId})" ${booking.status==='CANCELED' ? 'disabled' : ''}>
                 예매 취소
               </button>
           `;

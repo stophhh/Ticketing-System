@@ -185,6 +185,8 @@
           white-space: pre-wrap;
         }
     </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -195,7 +197,6 @@
         <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
-        <a href="#">고객센터</a>
     </nav>
 </header>
 
@@ -245,15 +246,15 @@
           body: JSON.stringify({ username, password })
         });
 
-        const result = await response.text();
+        const result = await response.json();
 
-        if (result.trim() === "로그인 성공") {
-          localStorage.setItem("userId", "1");
-          localStorage.setItem("username", username);
+        if (response.ok) {
+          localStorage.setItem("userId", String(result.userId));
+          localStorage.setItem("username", result.username);
           resultEl.innerText = "✅ 로그인 성공";
 
           const redirectUrl = localStorage.getItem("redirectUrl");
-          if (redirectUrl) {
+          if (redirectUrl && /^\/(?!\/)[a-zA-Z0-9_./?=&%-]*$/.test(redirectUrl)) {
             localStorage.removeItem("redirectUrl");
             location.href = redirectUrl;
           } else {
@@ -264,7 +265,7 @@
         }
 
       } catch (e) {
-        resultEl.innerText = "⚠️ 서버 연결 오류";
+        resultEl.innerText = e.message || "서버 연결 오류";
       }
     }
 </script>

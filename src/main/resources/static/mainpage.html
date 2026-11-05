@@ -190,6 +190,8 @@
       .card-list { grid-template-columns: 1fr; }
     }
   </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -273,12 +275,12 @@
 
       card.innerHTML = `
         <div class="poster">
-          <img src="${performance.posterUrl || '/images/default.jpg'}" alt="공연 포스터">
+          <img src="${safeImage(performance.posterUrl || '/images/default.svg')}" alt="공연 포스터">
         </div>
         <div class="card-content">
-          <span class="category">${performance.category || '공연'}</span>
-          <h3>${performance.title || '공연명 없음'}</h3>
-          <div class="date">${dateText} · ${performance.place || '장소 미정'}</div>
+          <span class="category">${escapeHtml(performance.category || '공연')}</span>
+          <h3>${escapeHtml(performance.title || '공연명 없음')}</h3>
+          <div class="date">${dateText} · ${escapeHtml(performance.place || '장소 미정')}</div>
           <button class="reserve-btn" onclick="location.href='detail.html?id=${performance.performanceId}'">
             예매하기
           </button>

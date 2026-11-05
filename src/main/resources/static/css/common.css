@@ -1,0 +1,14 @@
+/* 작은 화면에서도 예매와 관리자 입력을 사용할 수 있도록 공통 보정 */
+img { max-width:100%; }
+input, select, textarea { max-width:100%; }
+button:disabled { cursor:not-allowed; opacity:.55; }
+@media (max-width:640px) {
+  header {height:auto !important; min-height:72px; padding:16px !important; gap:12px; flex-wrap:wrap;}
+  header nav {display:flex;flex-wrap:wrap;gap:12px;}
+  header nav a {margin-left:0 !important;}
+  main, .container {max-width:100%; padding-left:16px !important; padding-right:16px !important;box-sizing:border-box;}
+  .login-box, .signup-box, .payment-box, .complete-box {width:100% !important;max-width:100%;box-sizing:border-box;}
+  .ticket {flex-direction:column;gap:16px;align-items:stretch;}
+  .detail-container, .detail-box, .booking-layout {flex-direction:column;grid-template-columns:1fr !important;}
+  #seats {grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:8px;}
+}

@@ -1,29 +1,29 @@
 package com.example.ticketing.entity;
+
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 public class Payment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private int amount;
+  private int amount;
 
-    private String method;
+  private String method;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+  @Enumerated(EnumType.STRING)
+  private PaymentStatus status;
 
-    private LocalDateTime paidAt;
+  private LocalDateTime paidAt;
 
-    @OneToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
+  @OneToOne
+  @JoinColumn(name = "booking_id", unique = true)
+  private Booking booking;
 }

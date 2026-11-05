@@ -207,6 +207,8 @@
           transform: none;
         }
     </style>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 
 <body>
@@ -217,7 +219,6 @@
         <a href="mypage.html">마이페이지</a>
         <a href="login.html">로그인</a>
         <a href="signup.html">회원가입</a>
-        <a href="#">고객센터</a>
     </nav>
 </header>
 
@@ -271,11 +272,6 @@
     const params        = new URLSearchParams(location.search);
     const performanceId = params.get("performanceId");
     const userId        = localStorage.getItem("userId");
-
-    if (!userId) {
-      alert("로그인 후 좌석을 선택할 수 있습니다.");
-      location.href = "login.html";
-    }
 
     if (!performanceId) {
       alert("공연 정보가 없습니다.");
@@ -357,11 +353,10 @@
       if (selectedSeats.length === 0) { showMessage("좌석을 먼저 선택해주세요."); return; }
 
       try {
-        for (const seat of selectedSeats) {
-          const response = await fetch(`/seats/${seat.id}/hold?userId=${userId}`, { method: "POST" });
-          const result   = await response.text();
-          if (!result.includes("성공")) { showMessage(result); return; }
-        }
+        await fetch('/seats/hold', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({performanceId:Number(performanceId),seatIds:selectedSeats.map(s=>s.id)})
+        });
 
         const seatIds     = selectedSeats.map(s => s.id).join(",");
         const totalAmount = selectedSeats.reduce((sum, s) => sum + Number(s.price), 0);
